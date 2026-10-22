@@ -10,7 +10,8 @@ const c = copy[lang].competitions;
 ---
 
 <section id="competitions" aria-labelledby="competitions-title" class="wrap py-16 md:py-24">
-  <SectionHead id="competitions-title" label={c.label} title={c.title} />
+<details open class="sect">
+  <SectionHead lang={lang} id="competitions-title" label={c.label} title={c.title} />
   <ol class="focus-list border-t border-ink">
     {
       c.list.map((p) => (
@@ -55,4 +56,5 @@ const c = copy[lang].competitions;
       ))
     }
   </ol>
+</details>
 </section>

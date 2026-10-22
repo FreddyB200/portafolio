@@ -17,7 +17,7 @@
   --color-accent-2: #d9a21b;
 
   --font-display: "Bricolage Grotesque Variable", "Helvetica Neue", Arial, sans-serif;
-  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-serif: "Source Serif 4 Variable", "Iowan Old Style", Georgia, "Times New Roman", serif;
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --breakpoint-xs: 30rem;
@@ -54,7 +54,7 @@
   body {
     background: var(--color-bg);
     color: var(--color-ink);
-    font-family: var(--font-sans);
+    font-family: var(--font-serif);
     font-size: clamp(1.0625rem, 0.6vw + 0.9rem, 1.25rem);
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
@@ -167,8 +167,8 @@
 
   /* Large reading text, same voice as the hero story */
   .prose-lg {
-    font-family: var(--font-display);
-    font-weight: 500;
+    font-family: var(--font-serif);
+    font-weight: 430;
     font-size: clamp(1.125rem, 1.3vw, 1.4rem);
     line-height: 1.55;
     letter-spacing: -0.005em;
@@ -277,6 +277,107 @@
   }
   .mail-xl:hover {
     background-size: 0% 3px;
+  }
+}
+
+/* Collapsible sections: native <details>, open by default. Header is the toggle. */
+@layer components {
+  .sect > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .sect > summary::-webkit-details-marker {
+    display: none;
+  }
+  .sect > summary:focus-visible {
+    outline: 2px solid var(--color-accent-ink);
+    outline-offset: 6px;
+  }
+  .sect-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+    color: var(--color-ink-soft);
+    white-space: nowrap;
+  }
+  .sect-toggle i {
+    position: relative;
+    display: block;
+    width: 1.75rem;
+    height: 1.75rem;
+    border: 1.5px solid currentColor;
+  }
+  /* minus bar + plus bar (the plus bar disappears while open) */
+  .sect-toggle i::before,
+  .sect-toggle i::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+  .sect-toggle i::before {
+    width: 0.7rem;
+    height: 1.5px;
+  }
+  .sect-toggle i::after {
+    width: 1.5px;
+    height: 0.7rem;
+  }
+  .sect[open] .sect-toggle i::after {
+    display: none;
+  }
+  .sect-sum:hover .sect-toggle {
+    color: var(--color-accent-ink);
+  }
+  .when-closed {
+    display: none;
+  }
+  .sect:not([open]) .when-open {
+    display: none;
+  }
+  .sect:not([open]) .when-closed {
+    display: inline;
+  }
+  .skill {
+    transition: color 0.15s;
+  }
+  @media (hover: hover) {
+    .skill:hover {
+      color: var(--color-accent-ink);
+    }
+  }
+  @media (max-width: 47.99rem) {
+    .sect-toggle span {
+      display: none !important;
+    }
+  }
+}
+
+/* Unlayered so it beats the mb-* utilities on the summary. */
+.sect:not([open]) > summary {
+  margin-bottom: 0;
+}
+
+/* Smooth open/close where supported; instant elsewhere and under reduced motion. */
+@supports selector(::details-content) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root {
+      interpolate-size: allow-keywords;
+    }
+    .sect::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size 0.3s ease,
+        content-visibility 0.3s allow-discrete;
+    }
+    .sect[open]::details-content {
+      block-size: auto;
+    }
   }
 }
 

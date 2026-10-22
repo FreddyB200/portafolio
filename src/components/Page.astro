@@ -28,3 +28,18 @@ const { lang } = Astro.props;
   </main>
   <FooterCTA lang={lang} />
 </Base>
+
+<script>
+  // A nav link to a collapsed section opens it first.
+  const openFor = (hash: string) => {
+    const el = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
+    const d = el?.matches('details') ? el : el?.querySelector('details.sect');
+    if (d instanceof HTMLDetailsElement) d.open = true;
+  };
+  document.addEventListener('click', (e) => {
+    const a = (e.target as Element).closest('a[href^="#"]');
+    if (a) openFor(a.getAttribute('href') ?? '');
+  });
+  addEventListener('hashchange', () => openFor(location.hash));
+  openFor(location.hash);
+</script>

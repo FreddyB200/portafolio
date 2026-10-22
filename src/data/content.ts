@@ -82,6 +82,8 @@ export interface Copy {
     navLabel: string;
     contact: string;
     backToTop: string;
+    hide: string;
+    show: string;
   };
   nav: { label: string; href: string }[];
   hero: { eyebrow: string; headline: string[]; paragraphs: string[]; photoAlt: string };
@@ -128,6 +130,8 @@ const en: Copy = {
     navLabel: 'Primary',
     contact: 'Contact',
     backToTop: 'Back to top',
+    hide: 'Hide',
+    show: 'Show',
   },
   nav: [
     { label: 'Experience', href: '#experience' },
@@ -355,6 +359,8 @@ const es: Copy = {
     navLabel: 'Principal',
     contact: 'Contacto',
     backToTop: 'Volver arriba',
+    hide: 'Ocultar',
+    show: 'Mostrar',
   },
   nav: [
     { label: 'Experiencia', href: '#experience' },
