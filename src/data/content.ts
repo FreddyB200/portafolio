@@ -84,7 +84,7 @@ export interface Copy {
   };
   nav: { label: string; href: string }[];
   hero: { eyebrow: string; headline: string[]; paragraphs: string[]; photoAlt: string };
-  stats: { label: string; value: string }[];
+  stats: { label: string; value: string; note?: string }[];
   experience: {
     label: string;
     title: string;
@@ -138,13 +138,13 @@ const en: Copy = {
     headline: ['I build backend systems', 'that are not allowed', 'to fail.'],
     paragraphs: [
       "I'm a backend and infrastructure engineer. Right now I work on BBVA's instant payments rail — ACH and Bre-B — where a transaction has a few hundred milliseconds to resolve and \"we'll fix it tomorrow\" isn't an option. Java, Spring Boot, contract-driven services, and a secure development standard I had to certify in before touching the codebase.",
-      "Before banking I ran production systems with much smaller teams and much less margin: a 24/7 camera streaming service, ERP and billing modules, Linux servers I was personally on the hook for at 2am. That's where I learned that the interesting part of this job isn't the code — it's designing for the moment things break. Three Top-2 finishes in LATAM engineering competitions, including an energy prediction platform for Indra.",
+      "Before banking I ran production systems with much smaller teams and much less margin: a 24/7 camera streaming service, ERP and billing modules, Linux servers I was personally on the hook for at 2am. That's where I learned that the interesting part of this job isn't the code — it's designing for the moment things break. Three Top-2 finishes in LATAM engineering competitions, including an ML-based energy prediction platform for a university, at a LATAM-wide hackathon organized by Indra.",
     ],
     photoAlt: 'Freddy Bautista working on a laptop',
   },
   stats: [
-    { label: 'Currently', value: 'Inetum → BBVA' },
-    { label: 'Domain', value: 'Real-time payments' },
+    { label: 'Currently', value: 'BBVA', note: 'Real-time payments project, via Inetum' },
+    { label: 'Years building', value: '4 years', note: 'Professional + independent work' },
     { label: 'Core stack', value: 'Java · Python · AWS' },
     { label: 'Based in', value: 'Bogotá, Colombia' },
   ],
@@ -245,8 +245,9 @@ const en: Copy = {
         name: 'EcoSentinel',
         subtitle: 'Energy Prediction Platform',
         place: 'Top 2',
-        event: 'IAMinds Hackathon 2026 — Indra Group × UPTC',
-        context: "Held at the launch of NovaIA, Indra's first AI Center of Excellence in Colombia.",
+        event: 'IAMinds Hackathon 2026 — LATAM-wide, organized by Indra Group',
+        context:
+          "Built for UPTC (Universidad Pedagógica y Tecnológica de Colombia). Held at the launch of NovaIA, Indra's first AI Center of Excellence in Colombia.",
         role: 'Tech Lead & Backend Developer',
         stats: [
           { value: '80', label: 'teams' },
@@ -254,7 +255,7 @@ const en: Copy = {
           { value: '275k+', label: 'records processed' },
         ],
         description:
-          'System design and backend architecture for an energy consumption prediction platform: 20 forecasting models across 4 university campuses (31,500+ students), queried over WhatsApp, with LLM-assisted root cause analysis for operational anomalies. Built in 36 hours.',
+          'System design and backend architecture for an energy consumption prediction platform for UPTC: 20 machine-learning forecasting models across 4 university campuses (31,500+ students), queried over WhatsApp, with LLM-assisted root cause analysis for operational anomalies. Built in 36 hours.',
         links: [
           {
             label: 'GitHub',
@@ -369,13 +370,13 @@ const es: Copy = {
     headline: ['Construyo sistemas', 'backend que no tienen', 'permitido fallar.'],
     paragraphs: [
       'Soy ingeniero de backend e infraestructura. Hoy trabajo en el riel de pagos inmediatos de BBVA — ACH y Bre-B — donde una transacción tiene unos cientos de milisegundos para resolverse y «lo arreglamos mañana» no es una opción. Java, Spring Boot, servicios guiados por contrato y un estándar de desarrollo seguro en el que tuve que certificarme antes de tocar el código.',
-      'Antes de la banca operé sistemas en producción con equipos mucho más pequeños y mucho menos margen: un servicio de streaming de cámaras 24/7, módulos de ERP y facturación, y servidores Linux de los que respondía yo personalmente a las 2 a. m. Ahí aprendí que lo interesante de este oficio no es el código, sino diseñar para el momento en que las cosas fallan. Tres podios Top 2 en competencias de ingeniería en LATAM, incluida una plataforma de predicción energética para Indra.',
+      'Antes de la banca operé sistemas en producción con equipos mucho más pequeños y mucho menos margen: un servicio de streaming de cámaras 24/7, módulos de ERP y facturación, y servidores Linux de los que respondía yo personalmente a las 2 a. m. Ahí aprendí que lo interesante de este oficio no es el código, sino diseñar para el momento en que las cosas fallan. Tres podios Top 2 en competencias de ingeniería en LATAM, incluida una plataforma de predicción energética con modelos de ML para una universidad, en un hackathon de alcance LATAM organizado por Indra.',
     ],
     photoAlt: 'Freddy Bautista trabajando en un portátil',
   },
   stats: [
-    { label: 'Actualmente', value: 'Inetum → BBVA' },
-    { label: 'Dominio', value: 'Pagos en tiempo real' },
+    { label: 'Actualmente', value: 'BBVA', note: 'Proyecto de pagos en tiempo real, vía Inetum' },
+    { label: 'Años construyendo', value: '4 años', note: 'Trabajo profesional + independiente' },
     { label: 'Stack principal', value: 'Java · Python · AWS' },
     { label: 'Ubicación', value: 'Bogotá, Colombia' },
   ],
@@ -476,8 +477,9 @@ const es: Copy = {
         name: 'EcoSentinel',
         subtitle: 'Plataforma de predicción energética',
         place: 'Top 2',
-        event: 'IAMinds Hackathon 2026 — Indra Group × UPTC',
-        context: 'Realizado durante el lanzamiento de NovaIA, el primer Centro de Excelencia en IA de Indra en Colombia.',
+        event: 'IAMinds Hackathon 2026 — alcance LATAM, organizado por Indra Group',
+        context:
+          'Construido para la UPTC (Universidad Pedagógica y Tecnológica de Colombia). Realizado durante el lanzamiento de NovaIA, el primer Centro de Excelencia en IA de Indra en Colombia.',
         role: 'Tech Lead y Desarrollador Backend',
         stats: [
           { value: '80', label: 'equipos' },
@@ -485,7 +487,7 @@ const es: Copy = {
           { value: '275k+', label: 'registros procesados' },
         ],
         description:
-          'Diseño del sistema y arquitectura backend de una plataforma de predicción de consumo energético: 20 modelos de pronóstico para 4 sedes universitarias (más de 31.500 estudiantes), consultable por WhatsApp, con análisis de causa raíz asistido por LLM para anomalías operativas. Construida en 36 horas.',
+          'Diseño del sistema y arquitectura backend de una plataforma de predicción de consumo energético para la UPTC: 20 modelos de machine learning para 4 sedes universitarias (más de 31.500 estudiantes), consultable por WhatsApp, con análisis de causa raíz asistido por LLM para anomalías operativas. Construida en 36 horas.',
         links: [
           {
             label: 'GitHub',

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* `dark:` follows the theme toggle (data-theme), not only the OS setting. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 @theme {
   --color-bg: #f7f6f3;
   --color-surface: #ffffff;
@@ -17,6 +20,7 @@
   --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --breakpoint-xs: 30rem;
+  --gutter: clamp(1.25rem, 3.4vw, 4rem);
 }
 
 /* Dark palette: only the tokens change, every utility follows. */
@@ -73,15 +77,10 @@
 }
 
 @layer components {
+  /* Full-width container: the side gutter scales with the viewport (phone → ultra-wide). */
   .wrap {
-    max-width: 1200px;
-    margin-inline: auto;
-    padding-inline: 1.25rem;
-  }
-  @media (min-width: 48rem) {
-    .wrap {
-      padding-inline: 2.5rem;
-    }
+    width: 100%;
+    padding-inline: var(--gutter);
   }
 
   /* Metadata label: IBM Plex Mono, uppercase, wide tracking */
