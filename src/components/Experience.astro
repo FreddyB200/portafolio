@@ -1,6 +1,5 @@
 ---
 import { copy, careerStart, monthsSince, formatDuration, durationUnits, type Lang } from '../data/content';
-import SectionHead from './SectionHead.astro';
 
 interface Props {
   lang: Lang;
@@ -11,42 +10,39 @@ const duration = formatDuration(monthsSince(careerStart), lang);
 ---
 
 <section id="experience" aria-labelledby="experience-title" class="wrap py-16 md:py-24">
-  <SectionHead id="experience-title" label={c.label} title={c.title} />
-
-  <div class="mb-8 flex flex-col gap-1 md:mb-10 md:grid md:grid-cols-[11rem_1fr] md:items-baseline md:gap-8">
-    <span aria-hidden="true"></span>
-    <div class="flex flex-wrap items-baseline gap-x-5 gap-y-1">
-      <p class="font-display text-[clamp(1.75rem,3.5vw,2.5rem)] font-extrabold tracking-tight">{c.range}</p>
-      <p class="meta text-ink-soft">
-        <span
-          data-exp-start={careerStart}
-          data-exp-units={JSON.stringify(durationUnits[lang])}
-          class="font-semibold text-ink">{duration}</span
-        >
-        {c.durationSuffix}
+  <div class="reveal mb-10 flex flex-col gap-3 md:mb-14 md:grid md:grid-cols-[var(--col1)_1fr] md:gap-8">
+    <p class="meta sec-label pt-2 text-ink-soft">{c.label}</p>
+    <div class="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
+      <h2 id="experience-title" class="text-[clamp(2.25rem,5.2vw,4.75rem)]">{c.title}</h2>
+      <p class="md:text-right">
+        <span class="block font-display text-[clamp(1.25rem,1.8vw,1.75rem)] font-extrabold leading-none tracking-tight">{c.range}</span>
+        <span class="meta mt-2 block text-ink-soft">
+          <span
+            data-exp-start={careerStart}
+            data-exp-units={JSON.stringify(durationUnits[lang])}
+            class="font-semibold text-ink">{duration}</span
+          >
+          {c.durationSuffix}
+        </span>
       </p>
     </div>
   </div>
 
-  <ol class="border-t border-ink">
+  <ol class="focus-list border-t border-ink">
     {
-      c.jobs.map((job) => (
-        <li class="grid gap-3 border-b border-rule py-8 md:grid-cols-[11rem_minmax(0,1fr)_minmax(0,1.7fr)] md:gap-8 md:py-10">
-          <p class="meta text-ink-soft">{job.dates}</p>
+      c.jobs.map((job, i) => (
+        <li class="row reveal grid gap-3 border-b border-rule py-8 md:grid-cols-[var(--col1)_minmax(0,1fr)_minmax(0,1.7fr)] md:gap-8 md:py-10">
+          <p class:list={['meta text-ink-soft', i === 0 && 'is-current']}>{job.dates}</p>
           <div>
-            <h3 class="font-display text-2xl font-bold tracking-tight">{job.company}</h3>
-            <p class="mt-1 font-medium">{job.role}</p>
+            <h3 class="font-display text-[clamp(1.5rem,1.9vw,2.2rem)] font-bold leading-tight tracking-tight">{job.company}</h3>
+            <p class="mt-2 text-[clamp(1.05rem,1.15vw,1.3rem)] font-medium leading-snug">{job.role}</p>
             <p class="meta mt-2 text-ink-soft">{job.place}</p>
           </div>
           <div>
-            <ul class="max-w-3xl space-y-2.5 text-ink-soft">
-              {job.bullets.map((b) => (
-                <li class="relative pl-5 before:absolute before:left-0 before:top-[0.8em] before:h-px before:w-2.5 before:bg-ink">
-                  {b}
-                </li>
-              ))}
-            </ul>
-            <ul class="mt-5 flex flex-wrap gap-2" aria-label={c.technologies}>
+            <div class="prose-lg max-w-[48rem] space-y-5 text-ink-soft">
+              {job.story.map((p) => <p>{p}</p>)}
+            </div>
+            <ul class="mt-7 flex flex-wrap gap-2" aria-label={c.technologies}>
               {job.tags.map((t) => (
                 <li class="tag">{t}</li>
               ))}

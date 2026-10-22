@@ -9,11 +9,12 @@
   --color-ink: #15171a;
   --color-ink-soft: #5b6066;
   --color-rule: #d8d5ce;
-  /* Teal as a fill (footer band, solid button). */
-  --color-accent: #0f4c5c;
-  /* Teal as text / hover colour; lightens in dark mode to keep contrast. */
-  --color-accent-ink: #0f4c5c;
-  --color-accent-2: #c1663a;
+  /* Dark ochre as a fill (footer band, solid button). */
+  --color-accent: #8a5a00;
+  /* Same ochre as text / hover colour; lightens in dark mode to keep contrast. */
+  --color-accent-ink: #8a5a00;
+  /* Bright amber: tiny "live" markers only. */
+  --color-accent-2: #d9a21b;
 
   --font-display: "Bricolage Grotesque Variable", "Helvetica Neue", Arial, sans-serif;
   --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
@@ -31,10 +32,14 @@
   --color-ink: #ecebe6;
   --color-ink-soft: #a5abb1;
   --color-rule: #2b3237;
-  --color-accent-ink: #6fbfd0;
+  --color-accent-ink: #e3b04b;
 }
 
 @layer base {
+  :root {
+    /* Width of the left (dates / labels) column shared by every section grid */
+    --col1: clamp(11rem, 12.5vw, 15rem);
+  }
   html {
     color-scheme: light;
     scroll-behavior: smooth;
@@ -50,7 +55,7 @@
     background: var(--color-bg);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-size: 1.0625rem;
+    font-size: clamp(1.0625rem, 0.6vw + 0.9rem, 1.25rem);
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -86,7 +91,7 @@
   /* Metadata label: IBM Plex Mono, uppercase, wide tracking */
   .meta {
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: clamp(0.75rem, 0.15vw + 0.7rem, 0.85rem);
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
@@ -96,9 +101,9 @@
   .tag {
     display: inline-block;
     border: 1px solid var(--color-ink);
-    padding: 0.15rem 0.5rem;
+    padding: 0.2rem 0.6rem;
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: clamp(0.8125rem, 0.2vw + 0.75rem, 0.95rem);
     line-height: 1.5;
     color: var(--color-ink);
     background: transparent;
@@ -142,6 +147,31 @@
     background: color-mix(in srgb, var(--color-accent) 75%, black);
     border-color: color-mix(in srgb, var(--color-accent) 75%, black);
     color: #fff;
+  }
+
+  /* Contact buttons: larger, with icon, accent colour */
+  .btn-lg {
+    gap: 0.55rem;
+    padding: 0.9rem 0.95rem;
+    font-size: 0.8125rem;
+  }
+  .btn-accent {
+    color: var(--color-accent-ink);
+    border-color: var(--color-accent-ink);
+  }
+  .btn-accent:hover {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+
+  /* Large reading text, same voice as the hero story */
+  .prose-lg {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.125rem, 1.3vw, 1.4rem);
+    line-height: 1.55;
+    letter-spacing: -0.005em;
   }
 
   /* Header controls: language switch + theme toggle */
@@ -189,5 +219,97 @@
     font-size: clamp(2rem, 4.2vw, 3rem);
     letter-spacing: -0.04em;
     line-height: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Design layer: technical-document details. All decorative; meaning  */
+/* is always carried by text, never by colour alone.                  */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Small square marker before mono labels (amber = "live", ochre = section) */
+  .sec-label::before,
+  .is-current::before {
+    content: "";
+    display: inline-block;
+    width: 0.5rem;
+    height: 0.5rem;
+    margin-right: 0.65em;
+    vertical-align: 0.05em;
+    background: var(--color-accent-ink);
+  }
+  .is-current::before {
+    background: var(--color-accent-2);
+  }
+
+  /* Very soft tonal wash behind the top of the hero: no pattern, just depth */
+  .hero-wash {
+    background-image: radial-gradient(
+      70rem 30rem at 8% -6%,
+      color-mix(in srgb, var(--color-accent-ink) 9%, transparent),
+      transparent 70%
+    );
+  }
+
+  /* Focus effect on hover-capable devices: dim sibling rows, no layout shift */
+  @media (hover: hover) {
+    .focus-list:has(.row:hover) .row:not(:hover) {
+      filter: opacity(0.45);
+    }
+    .row {
+      transition: filter 0.25s ease;
+    }
+  }
+
+  /* Big footer email with an underline that draws in */
+  .mail-xl {
+    font-family: var(--font-display);
+    font-weight: 750;
+    font-size: clamp(1.4rem, 4.2vw, 3.75rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(currentColor, currentColor) left bottom / 100% 3px no-repeat;
+    padding-bottom: 0.15em;
+    overflow-wrap: anywhere;
+    transition: background-size 0.25s ease;
+  }
+  .mail-xl:hover {
+    background-size: 0% 3px;
+  }
+}
+
+/* Scroll-driven motion: progressive enhancement, off for reduced motion. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 32%;
+    }
+    .scroll-progress {
+      transform-origin: left center;
+      animation: progress-grow linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+}
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes progress-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
   }
 }

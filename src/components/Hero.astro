@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import { copy, links, type Lang } from '../data/content';
+import Icon from './Icon.astro';
 import photo from '../assets/freddy.jpg';
 
 interface Props {
@@ -8,44 +9,69 @@ interface Props {
 }
 const { lang } = Astro.props;
 const c = copy[lang];
+
+const padX = 'px-[var(--gutter)] lg:pr-[clamp(1.5rem,2.6vw,3.5rem)]';
 ---
 
-<section id="top" class="lg:grid lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-  <!-- Text side: left edge aligns with the page grid, right edge stops at the photo -->
-  <div
-    class="px-[var(--gutter)] pb-14 pt-12 md:pb-20 md:pt-20 lg:py-[clamp(4rem,7vw,8rem)] lg:pr-[clamp(2rem,3.4vw,5rem)]"
-  >
-    <p class="meta mb-8 text-ink-soft md:mb-12">{c.hero.eyebrow}</p>
-    <h1 class="text-[clamp(2.25rem,4vw,5.5rem)] text-ink">
+<!--
+  Desktop: headline, story and contact buttons stacked on the left (buttons pinned to the bottom,
+  next to the divider line), photo on the right at the same height.
+  Mobile order: headline, buttons, photo, story.
+-->
+<section id="top" class="flex flex-col lg:grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:grid-rows-[auto_1fr_auto]">
+  <div class:list={['hero-wash order-1 pb-8 pt-12 md:pt-20 lg:col-start-1 lg:row-start-1 lg:pb-0 lg:pt-[clamp(2.5rem,4.5vw,5.5rem)]', padX]}>
+    <p class="meta sec-label is-current mb-7 text-ink-soft md:mb-9">{c.hero.eyebrow}</p>
+    <h1 class="text-[clamp(2.25rem,3.9vw,5.5rem)] text-ink">
       {c.hero.headline.map((line) => <span class="block [text-wrap:balance]">{line}</span>)}
     </h1>
-
-    <div
-      class="mt-10 grid max-w-[64rem] gap-6 font-display text-[clamp(1.0625rem,1.3vw,1.3rem)] font-medium leading-[1.5] tracking-[-0.005em] text-ink-soft md:mt-14 md:grid-cols-2 md:gap-10"
-    >
-      {c.hero.paragraphs.map((p) => <p>{p}</p>)}
-    </div>
-
-    <div class="mt-10 flex flex-wrap items-center gap-3">
-      <a href={`mailto:${links.email}`} class="btn btn-solid">{links.email}</a>
-      <a href={links.github} class="btn" rel="noopener">GitHub</a>
-      <a href={links.linkedin} class="btn" rel="noopener">LinkedIn</a>
-      <a href={links.resume} class="btn">{c.ui.resume}</a>
-    </div>
   </div>
 
-  <!-- Photo side: full bleed, edge to edge, original colour -->
-  <figure class="relative aspect-[4/3] border-t border-ink sm:aspect-[16/10] lg:aspect-auto lg:min-h-full lg:border-l lg:border-t-0">
+  <div
+    class:list={[
+      'order-4 grid gap-6 py-10 font-display text-[clamp(1.125rem,1.22vw,1.35rem)] font-medium leading-[1.5] tracking-[-0.005em] text-ink-soft md:grid-cols-2 md:gap-9 lg:col-start-1 lg:row-start-2 lg:pb-0 lg:pt-[clamp(1.5rem,2.6vw,3rem)]',
+      padX,
+    ]}
+  >
+    {c.hero.paragraphs.map((p) => <p>{p}</p>)}
+  </div>
+
+  <figure
+    class="relative order-3 aspect-[4/3] border-y border-ink lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:aspect-auto lg:min-h-full lg:border-y-0 lg:border-l"
+  >
     <Image
       src={photo}
       alt={c.hero.photoAlt}
       widths={[640, 960, 1200]}
-      sizes="(min-width: 1024px) 40vw, 100vw"
+      sizes="(min-width: 1024px) 42vw, 100vw"
       format="webp"
       quality={82}
       loading="eager"
       fetchpriority="high"
-      class="absolute inset-0 h-full w-full object-cover object-[62%_center]"
+      class="absolute inset-0 h-full w-full object-cover object-[56%_center]"
     />
   </figure>
+
+  <div
+    class:list={[
+      'order-2 flex flex-wrap items-center gap-2.5 pb-9 lg:col-start-1 lg:row-start-3 lg:pb-[clamp(1.75rem,2.8vw,3rem)] lg:pt-8',
+      padX,
+    ]}
+  >
+    <a href={`mailto:${links.email}`} class="btn btn-solid btn-lg">
+      <Icon name="mail" />
+      {links.email}
+    </a>
+    <a href={links.github} class="btn btn-accent btn-lg" rel="noopener">
+      <Icon name="github" />
+      GitHub
+    </a>
+    <a href={links.linkedin} class="btn btn-accent btn-lg" rel="noopener">
+      <Icon name="linkedin" />
+      LinkedIn
+    </a>
+    <a href={links.resume} class="btn btn-accent btn-lg">
+      <Icon name="download" />
+      {c.ui.resume}
+    </a>
+  </div>
 </section>
