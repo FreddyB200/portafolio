@@ -1,0 +1,58 @@
+---
+import { copy, type Lang } from '../data/content';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang].competitions;
+---
+
+<section id="competitions" aria-labelledby="competitions-title" class="wrap py-16 md:py-24">
+  <SectionHead id="competitions-title" label={c.label} title={c.title} />
+  <ol class="border-t border-ink">
+    {
+      c.list.map((p) => (
+        <li class="grid gap-6 border-b border-rule py-10 md:grid-cols-[11rem_minmax(0,1fr)_minmax(0,1.7fr)] md:gap-8 md:py-12">
+          <p class="font-display text-[clamp(2.5rem,5vw,3.5rem)] font-extrabold leading-none tracking-tighter">
+            {p.place}
+          </p>
+
+          <div>
+            <h3 class="font-display text-2xl font-bold tracking-tight">{p.name}</h3>
+            <p class="mt-1 font-medium">{p.subtitle}</p>
+            <p class="meta mt-4 text-ink-soft">{c.hostLabel}</p>
+            <p class="font-medium">{p.event}</p>
+            {p.context && <p class="mt-1 text-sm text-ink-soft">{p.context}</p>}
+            <p class="meta mt-4 text-ink-soft">{c.roleLabel}</p>
+            <p class="font-medium">{p.role}</p>
+          </div>
+
+          <div>
+            <dl class="grid grid-cols-2 gap-x-6 gap-y-5 border-y border-ink py-5 sm:grid-cols-3">
+              {p.stats.map((s) => (
+                <div>
+                  <dd class="stat-num">{s.value}</dd>
+                  <dt class="meta mt-2 text-ink-soft">{s.label}</dt>
+                </div>
+              ))}
+            </dl>
+            <p class="mt-6 text-ink-soft">{p.description}</p>
+            {p.links.length > 0 && (
+              <ul class="meta mt-5 flex flex-wrap gap-x-6 gap-y-2">
+                {p.links.map((l) => (
+                  <li>
+                    <a href={l.href} class="link" rel="noopener">
+                      {l.label} ↗
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>

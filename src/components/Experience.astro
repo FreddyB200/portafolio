@@ -1,0 +1,78 @@
+---
+import { copy, careerStart, monthsSince, formatDuration, durationUnits, type Lang } from '../data/content';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang].experience;
+const duration = formatDuration(monthsSince(careerStart), lang);
+---
+
+<section id="experience" aria-labelledby="experience-title" class="wrap py-16 md:py-24">
+  <SectionHead id="experience-title" label={c.label} title={c.title} />
+
+  <div class="mb-8 flex flex-col gap-1 md:mb-10 md:grid md:grid-cols-[11rem_1fr] md:items-baseline md:gap-8">
+    <span aria-hidden="true"></span>
+    <div class="flex flex-wrap items-baseline gap-x-5 gap-y-1">
+      <p class="font-display text-[clamp(1.75rem,3.5vw,2.5rem)] font-extrabold tracking-tight">{c.range}</p>
+      <p class="meta text-ink-soft">
+        <span
+          data-exp-start={careerStart}
+          data-exp-units={JSON.stringify(durationUnits[lang])}
+          class="font-semibold text-ink">{duration}</span
+        >
+        {c.durationSuffix}
+      </p>
+    </div>
+  </div>
+
+  <ol class="border-t border-ink">
+    {
+      c.jobs.map((job) => (
+        <li class="grid gap-3 border-b border-rule py-8 md:grid-cols-[11rem_minmax(0,1fr)_minmax(0,1.7fr)] md:gap-8 md:py-10">
+          <p class="meta text-ink-soft">{job.dates}</p>
+          <div>
+            <h3 class="font-display text-2xl font-bold tracking-tight">{job.company}</h3>
+            <p class="mt-1 font-medium">{job.role}</p>
+            <p class="meta mt-2 text-ink-soft">{job.place}</p>
+          </div>
+          <div>
+            <ul class="space-y-2.5 text-ink-soft">
+              {job.bullets.map((b) => (
+                <li class="relative pl-5 before:absolute before:left-0 before:top-[0.8em] before:h-px before:w-2.5 before:bg-ink">
+                  {b}
+                </li>
+              ))}
+            </ul>
+            <ul class="mt-5 flex flex-wrap gap-2" aria-label={c.technologies}>
+              {job.tags.map((t) => (
+                <li class="tag">{t}</li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<script>
+  // Keep the "time worked" exact even if the site is not redeployed this month.
+  const el = document.querySelector<HTMLElement>('[data-exp-start]');
+  if (el) {
+    try {
+      const u = JSON.parse(el.dataset.expUnits ?? '{}');
+      const [sy, sm] = (el.dataset.expStart ?? '').split('-').map(Number);
+      const now = new Date();
+      const total = Math.max(0, (now.getFullYear() - sy) * 12 + (now.getMonth() + 1 - sm));
+      const y = Math.floor(total / 12);
+      const m = total % 12;
+      const parts: string[] = [];
+      if (y > 0) parts.push(`${y} ${u.y[y === 1 ? 0 : 1]}`);
+      if (m > 0 || y === 0) parts.push(`${m} ${u.m[m === 1 ? 0 : 1]}`);
+      el.textContent = parts.join(u.sep);
+    } catch (e) {}
+  }
+</script>

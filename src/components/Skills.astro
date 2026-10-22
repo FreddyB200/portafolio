@@ -1,0 +1,36 @@
+---
+import { copy, type Lang } from '../data/content';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang].skills;
+---
+
+<section id="skills" aria-labelledby="skills-title" class="border-y border-rule bg-surface">
+  <div class="wrap py-16 md:py-24">
+    <SectionHead id="skills-title" label={c.label} title={c.title} />
+    <div class="border-t border-ink">
+      {
+        c.groups.map((g, i) => (
+          <div class="grid gap-4 border-b border-rule py-8 md:grid-cols-[11rem_1fr] md:gap-8 md:py-10">
+            <div>
+              <h3 class="meta text-ink">
+                <span aria-hidden="true">{String(i + 1).padStart(2, '0')} · </span>
+                {g.title}
+              </h3>
+              <p class="mt-2 text-sm text-ink-soft">{g.note}</p>
+            </div>
+            <ul class="flex flex-wrap content-start gap-2">
+              {g.items.map((item) => (
+                <li class="tag">{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

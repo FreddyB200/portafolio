@@ -1,0 +1,40 @@
+---
+import { copy, links, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang];
+---
+
+<footer id="contact" class="bg-accent text-white">
+  <div class="wrap py-16 md:py-24">
+    <h2 class="max-w-[18ch] text-[clamp(2.25rem,6vw,5rem)]">{c.footer.headline}</h2>
+    <div class="mt-10 flex flex-wrap items-center gap-3">
+      <a
+        href={`mailto:${links.email}`}
+        class="meta inline-flex items-center border-[1.5px] border-white bg-white px-4 py-3 text-accent no-underline hover:bg-transparent hover:text-white"
+      >
+        {links.email}
+      </a>
+      <a
+        href={links.linkedin}
+        rel="noopener"
+        class="meta inline-flex items-center border-[1.5px] border-white px-4 py-3 text-white no-underline hover:bg-white hover:text-accent"
+      >
+        LinkedIn
+      </a>
+      <a
+        href={links.github}
+        rel="noopener"
+        class="meta inline-flex items-center border-[1.5px] border-white px-4 py-3 text-white no-underline hover:bg-white hover:text-accent"
+      >
+        GitHub
+      </a>
+    </div>
+    <p class="meta mt-16 border-t border-white/40 pt-5 text-white">
+      © {new Date().getFullYear()} Freddy Bautista Baquero · {c.footer.rights}
+    </p>
+  </div>
+</footer>

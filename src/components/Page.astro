@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import StatBar from './StatBar.astro';
+import Experience from './Experience.astro';
+import Skills from './Skills.astro';
+import Competitive from './Competitive.astro';
+import Credentials from './Credentials.astro';
+import FooterCTA from './FooterCTA.astro';
+import type { Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<Base lang={lang}>
+  <Header lang={lang} />
+  <main id="main">
+    <Hero lang={lang} />
+    <StatBar lang={lang} />
+    <Experience lang={lang} />
+    <Skills lang={lang} />
+    <Competitive lang={lang} />
+    <Credentials lang={lang} />
+  </main>
+  <FooterCTA lang={lang} />
+</Base>

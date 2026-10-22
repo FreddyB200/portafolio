@@ -1,0 +1,13 @@
+---
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+}
+const { id, label, title } = Astro.props;
+---
+
+<div class="mb-10 flex flex-col gap-3 md:mb-14 md:grid md:grid-cols-[11rem_1fr] md:gap-8">
+  <p class="meta pt-2 text-ink-soft">{label}</p>
+  <h2 id={id} class="text-[clamp(2rem,5vw,3.5rem)]">{title}</h2>
+</div>

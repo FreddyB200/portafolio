@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import { copy, links, type Lang } from '../data/content';
+import photo from '../assets/freddy.jpg';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang];
+---
+
+<section id="top" class="wrap pb-16 pt-12 md:pb-24 md:pt-20">
+  <p class="meta mb-8 text-ink-soft md:mb-12">{c.hero.eyebrow}</p>
+  <h1 class="text-[clamp(2.25rem,6.6vw,5.5rem)] text-ink">
+    {c.hero.headline.map((line) => <span class="block [text-wrap:balance]">{line}</span>)}
+  </h1>
+
+  <div class="mt-12 grid items-start gap-10 md:mt-20 md:grid-cols-12 md:gap-14">
+    <figure class="md:col-span-5">
+      <Image
+        src={photo}
+        alt={c.hero.photoAlt}
+        widths={[480, 720, 1000]}
+        sizes="(min-width: 1200px) 460px, (min-width: 768px) 40vw, 100vw"
+        format="webp"
+        quality={80}
+        loading="eager"
+        fetchpriority="high"
+        class="aspect-[4/3] w-full border border-ink object-cover object-[62%_center]"
+      />
+    </figure>
+
+    <div class="md:col-span-7">
+      <div class="space-y-6 text-ink-soft">
+        {c.hero.paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+
+      <div class="mt-10 flex flex-wrap items-center gap-3">
+        <a href={`mailto:${links.email}`} class="btn btn-solid">{links.email}</a>
+        <a href={links.github} class="btn" rel="noopener">GitHub</a>
+        <a href={links.linkedin} class="btn" rel="noopener">LinkedIn</a>
+        <a href={links.resume} class="btn">{c.ui.resume}</a>
+      </div>
+    </div>
+  </div>
+</section>

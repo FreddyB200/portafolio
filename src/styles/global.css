@@ -1,0 +1,194 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg: #f7f6f3;
+  --color-surface: #ffffff;
+  --color-ink: #15171a;
+  --color-ink-soft: #5b6066;
+  --color-rule: #d8d5ce;
+  /* Teal as a fill (footer band, solid button). */
+  --color-accent: #0f4c5c;
+  /* Teal as text / hover colour; lightens in dark mode to keep contrast. */
+  --color-accent-ink: #0f4c5c;
+  --color-accent-2: #c1663a;
+
+  --font-display: "Bricolage Grotesque Variable", "Helvetica Neue", Arial, sans-serif;
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --breakpoint-xs: 30rem;
+}
+
+/* Dark palette: only the tokens change, every utility follows. */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #0e1113;
+  --color-surface: #151a1d;
+  --color-ink: #ecebe6;
+  --color-ink-soft: #a5abb1;
+  --color-rule: #2b3237;
+  --color-accent-ink: #6fbfd0;
+}
+
+@layer base {
+  html {
+    color-scheme: light;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 750;
+    letter-spacing: -0.03em;
+    line-height: 1.02;
+  }
+  a {
+    text-underline-offset: 0.2em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-accent-ink);
+    outline-offset: 3px;
+  }
+  ::selection {
+    background: var(--color-accent);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .wrap {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 48rem) {
+    .wrap {
+      padding-inline: 2.5rem;
+    }
+  }
+
+  /* Metadata label: IBM Plex Mono, uppercase, wide tracking */
+  .meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  .tag {
+    display: inline-block;
+    border: 1px solid var(--color-ink);
+    padding: 0.15rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--color-ink);
+    background: transparent;
+  }
+
+  .link {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .link:hover {
+    color: var(--color-accent-ink);
+    text-decoration-thickness: 2px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.1rem;
+    border: 1.5px solid var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--color-ink);
+    background: transparent;
+    transition: background-color 0.15s, color 0.15s;
+  }
+  .btn:hover {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+  .btn-solid {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+  .btn-solid:hover {
+    background: color-mix(in srgb, var(--color-accent) 75%, black);
+    border-color: color-mix(in srgb, var(--color-accent) 75%, black);
+    color: #fff;
+  }
+
+  /* Header controls: language switch + theme toggle */
+  .ctl {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.25rem;
+    border: 1.5px solid var(--color-ink);
+    color: var(--color-ink);
+    background: transparent;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .ctl:hover {
+    background: var(--color-rule);
+  }
+  .ctl[aria-current="true"],
+  .ctl[aria-current="true"]:hover {
+    background: var(--color-ink);
+    color: var(--color-bg);
+    font-weight: 500;
+    cursor: default;
+  }
+
+  /* Theme icon: show the icon for the mode you would switch TO */
+  .i-sun {
+    display: none;
+  }
+  :root[data-theme="dark"] .i-sun {
+    display: block;
+  }
+  :root[data-theme="dark"] .i-moon {
+    display: none;
+  }
+
+  /* Podium stat blocks: size and weight carry the emphasis, not colour */
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 4.2vw, 3rem);
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+}

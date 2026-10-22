@@ -1,0 +1,55 @@
+---
+import { copy, links, site, pathFor, langs, type Lang } from '../data/content';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang];
+---
+
+<header class="sticky top-0 z-40 border-b border-rule bg-bg/95 backdrop-blur">
+  <div class="wrap flex items-center justify-between gap-3 py-3 md:gap-6">
+    <a href="#top" class="font-display text-lg font-bold tracking-tight text-ink no-underline">
+      {site.name.split(' ').slice(0, 2).join(' ')}
+    </a>
+
+    <nav aria-label={c.ui.navLabel} class="flex items-center gap-3 md:gap-7">
+      <ul class="hidden items-center gap-7 lg:flex">
+        {
+          c.nav.map((item) => (
+            <li>
+              <a href={item.href} class="meta text-ink-soft no-underline hover:text-accent-ink hover:underline">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a href={links.resume} class="meta text-ink underline decoration-1 hover:text-accent-ink">
+        <span class="hidden xs:inline">{c.ui.resume}</span>
+        <span class="xs:hidden">{c.ui.resumeShort}</span>
+      </a>
+
+      <div role="group" aria-label={c.ui.langLabel} class="inline-flex">
+        {
+          langs.map((l, i) => (
+            <a
+              href={pathFor(l)}
+              hreflang={l}
+              lang={l}
+              aria-current={l === lang ? 'true' : undefined}
+              class:list={['ctl w-10', i > 0 && '-ml-[1.5px]']}
+            >
+              {l.toUpperCase()}
+            </a>
+          ))
+        }
+      </div>
+
+      <ThemeToggle toDark={c.ui.themeToDark} toLight={c.ui.themeToLight} />
+    </nav>
+  </div>
+</header>
