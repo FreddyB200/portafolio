@@ -66,6 +66,10 @@ export interface Podium {
   stats: { value: string; label: string }[];
   description: string;
   links: { label: string; href: string }[];
+  /** Optional proof, shown in a closed "Evidence" disclosure (organizer page, video, post, photos). */
+  evidence?: { label: string; href: string }[];
+  /** File names inside src/assets/evidence/ */
+  images?: { file: string; alt: string }[];
 }
 
 export interface Copy {
@@ -97,7 +101,7 @@ export interface Copy {
     jobs: Job[];
   };
   skills: { label: string; title: string; groups: SkillGroup[] };
-  competitions: { label: string; title: string; hostLabel: string; roleLabel: string; list: Podium[] };
+  competitions: { label: string; title: string; hostLabel: string; roleLabel: string; evidenceLabel: string; list: Podium[] };
   credentials: {
     label: string;
     title: string;
@@ -143,8 +147,8 @@ const en: Copy = {
     eyebrow: 'Backend & Infrastructure Engineer · Java · Python · Secure by design',
     headline: ['I build backend systems', 'that are not allowed', 'to fail'],
     paragraphs: [
-      "I'm a backend and infrastructure engineer. Today I work on BBVA's instant payments rail (ACH, Bre-B and Redeban), where a transaction has a few hundred milliseconds to resolve and \"we'll fix it tomorrow\" isn't an option. I work in Java and Spring Boot, and I had to certify in a secure development standard before touching the codebase.",
-      "Before banking I ran production systems with much smaller teams and much less margin: a 24/7 camera streaming service, ERP and billing modules, and Linux servers I was personally on the hook for at 2am. That's where I learned that the interesting part of this job isn't the code. It's designing for the moment things break. I've also placed Top 2 in three LATAM engineering competitions.",
+      "I work on BBVA's instant payments rail (ACH, Bre-B and Redeban), where a transaction has a few hundred milliseconds to resolve and \"we'll fix it tomorrow\" isn't an option. Java and Spring Boot, with a secure development certification earned before touching the codebase.",
+      'Before banking I ran production systems with small teams: a 24/7 camera streaming service, ERP and billing modules, Linux servers. It taught me to design for the moment things break. Top 2 in three LATAM engineering competitions.',
     ],
     photoAlt: 'Freddy Bautista working on a laptop',
   },
@@ -167,22 +171,9 @@ const en: Copy = {
         role: 'Backend Java Developer, Instant Payments',
         place: 'Bogotá · Remote',
         story: [
-          'I work on the instant payments side of BBVA Colombia, building the backend services behind real-time transfers through ACH, Bre-B and Redeban. The architecture is distributed and event-driven, with orchestration libraries and integration with the host system, so a lot of my work is thinking about what happens between services when something fails.',
-          'I test everything with JUnit and Mockito, and SonarQube gates every change on coverage, new code smells and complexity. Peer review, small focused methods and static-analysis rules (like never catching NullPointerException) are simply how we write code. We ship in Scrum, with release planning, rollback plans and production-readiness checklists, and when a payment goes wrong across services I trace it end to end and check the database evidence to find where.',
+          'I build the backend services behind real-time transfers over ACH, Bre-B and Redeban, in a distributed, event-driven architecture. Every change is tested (JUnit, Mockito), gated by SonarQube and shipped with a rollback plan; when a payment fails across services, I trace it end to end.',
         ],
-        tags: [
-          'Java',
-          'Event-driven architecture',
-          'Distributed systems',
-          'Oracle',
-          'JUnit',
-          'Mockito',
-          'Maven',
-          'SonarQube',
-          'Scrum',
-          'Clean Code',
-          'Code Review',
-        ],
+        tags: ['Java', 'Event-driven architecture', 'Distributed systems', 'Oracle', 'JUnit', 'SonarQube', 'Scrum'],
       },
       {
         dates: 'Feb 2025 – Feb 2026',
@@ -190,10 +181,9 @@ const en: Copy = {
         role: 'Fullstack Developer',
         place: 'Bogotá · On-site',
         story: [
-          "The part of ESCOLE I'm proudest of is an equipment management platform that ended up being used by more than five entire departments, shipped with tests and documentation. Around it I owned the production backend end to end: REST APIs on Docker, Linux servers, and fixing incidents when they happened.",
-          'I also built a 24/7 streaming service in FastAPI for 16 cameras (RTSP to HLS), and I introduced Git into projects that had never used it.',
+          'I built an equipment management platform that more than five departments adopted, shipped with tests and documentation, and owned the production backend end to end: REST APIs on Docker, Linux servers, incidents. I also built a 24/7 streaming service in FastAPI for 16 cameras.',
         ],
-        tags: ['React', 'Google Apps Script', 'Python', 'FastAPI', 'Docker', 'Linux', 'PostgreSQL'],
+        tags: ['React', 'Google Apps Script', 'FastAPI', 'Docker', 'Linux', 'PostgreSQL'],
       },
       {
         dates: 'Feb 2024 – Feb 2025',
@@ -201,9 +191,9 @@ const en: Copy = {
         role: 'Java Developer',
         place: 'Bogotá · Remote',
         story: [
-          'I built a multi-module ERP in Java 17 and Spring Boot with JPA/Hibernate, covering billing, contracts and clients. I designed the PostgreSQL schema and the REST API against OpenAPI contracts, and I gathered the requirements directly with the business, delivering on the dates we committed to.',
+          'I built a multi-module ERP in Java 17 and Spring Boot (billing, contracts, clients): PostgreSQL schema, REST API against OpenAPI contracts, and requirements gathered directly with the business.',
         ],
-        tags: ['Java 17', 'Spring Boot', 'JPA/Hibernate', 'PostgreSQL', 'OpenAPI'],
+        tags: ['Java 17', 'Spring Boot', 'PostgreSQL', 'OpenAPI'],
       },
     ],
   },
@@ -213,24 +203,24 @@ const en: Copy = {
     groups: [
       {
         title: 'Production',
-        note: 'Used in systems that serve real users, and in products shipped under competition conditions',
+        note: 'Real users and shipped products',
         items: [
           'Java 17', 'Spring Boot', 'Spring Security', 'REST / OpenAPI', 'JPA/Hibernate', 'Python',
-          'FastAPI', 'PostgreSQL', 'Docker', 'Linux', 'Git', 'Maven', 'JUnit', 'Mockito',
-          'React', 'TypeScript', 'Supabase', 'n8n', 'LLM integrations (OpenAI, Gemini, LiteLLM)',
+          'FastAPI', 'PostgreSQL', 'Docker', 'Linux', 'React', 'TypeScript', 'Supabase', 'n8n',
+          'LLM integrations (OpenAI, Gemini, LiteLLM)',
         ],
       },
       {
         title: 'Infrastructure & practices',
-        note: 'How the work gets shipped and kept alive',
+        note: 'How the work ships and stays alive',
         items: [
-          'CI/CD', 'Jenkins', 'Artifactory', 'Bash', 'SonarQube', 'Secure SDLC', 'Code review',
-          'Agile / Scrum', 'Redis', 'Oracle SQL', 'AWS fundamentals',
+          'CI/CD', 'Jenkins', 'Artifactory', 'Git', 'Bash', 'SonarQube', 'JUnit / Mockito', 'Secure SDLC',
+          'Redis', 'Oracle SQL', 'AWS fundamentals',
         ],
       },
       {
         title: 'Working knowledge',
-        note: 'Used on projects, not yet at production depth',
+        note: 'Used on projects, not yet in production',
         items: ['Go', 'Rust'],
       },
     ],
@@ -240,14 +230,15 @@ const en: Copy = {
     title: 'Competitive engineering',
     hostLabel: 'Event',
     roleLabel: 'Role',
+    evidenceLabel: 'Evidence',
     list: [
       {
         name: 'EcoSentinel',
         subtitle: 'Energy Prediction Platform',
         place: 'Top 2',
-        event: 'IAMinds Hackathon 2026 · LATAM-wide, organized by Indra Group',
+        event: 'IAMinds Hackathon 2026 · LATAM · Indra Group',
         context:
-          "Built for UPTC (Universidad Pedagógica y Tecnológica de Colombia). Held at the launch of NovaIA, Indra's first AI Center of Excellence in Colombia.",
+          "Built for UPTC, at the launch of Indra's NovaIA AI Center of Excellence.",
         role: 'Tech Lead & Backend Developer',
         stats: [
           { value: '80', label: 'teams' },
@@ -255,7 +246,7 @@ const en: Copy = {
           { value: '275k+', label: 'records processed' },
         ],
         description:
-          'System design and backend architecture for an energy consumption prediction platform for UPTC: 20 machine-learning forecasting models across 4 university campuses (31,500+ students), queried over WhatsApp, with LLM-assisted root cause analysis for operational anomalies. Built in 36 hours.',
+          'Backend architecture for an energy prediction platform serving 4 campuses and 31,500+ students: 20 ML forecasting models, queried over WhatsApp, with LLM-assisted root-cause analysis of anomalies. Built in 36 hours.',
         links: [
           {
             label: 'GitHub',
@@ -274,7 +265,7 @@ const en: Copy = {
           { value: '300+', label: 'applicants' },
         ],
         description:
-          'A security layer enforcing delegation-chain authorization for AI agents calling MCP servers: a deterministic Rust decision engine with Z3-based formal policy auditing. Authorization treated as a property you can prove, not a runtime guess.',
+          'A security layer that authorizes what AI agents can do when calling MCP servers: a deterministic Rust decision engine with Z3-based formal policy auditing.',
         links: [
           { label: 'GitHub', href: 'https://github.com/FreddyB200/Roxy' },
           { label: 'PyPI SDK', href: 'https://pypi.org/project/roxy-guard/' },
@@ -286,7 +277,7 @@ const en: Copy = {
         subtitle: 'AI Campaign Agent',
         place: 'Top 2',
         event: 'The GTM Hackathon 2026 · 30x',
-        context: 'Colombia & Mexico. Organized by 30x, co-founded by Andrés Bilbao (Rappi co-founder).',
+        context: 'Colombia & Mexico, organized by 30x.',
         role: 'Tech Lead',
         stats: [
           { value: '50', label: 'teams' },
@@ -325,13 +316,12 @@ const en: Copy = {
     items: [
       { title: 'Secure Development Certification', detail: 'BBVA internal standard, 88.37/100' },
       { title: 'Makers Fellowship 2026', detail: 'Coding Track, <1% acceptance rate' },
-      { title: 'Aspire Leaders Program', detail: 'Founded at Harvard University by HBS professors' },
+      { title: 'Aspire Leaders Program', detail: 'Leadership program founded at Harvard' },
       {
         title: 'Oracle',
-        detail: 'Database Programming with SQL (2025–2031), Database Foundations, Database Design',
+        detail: 'Database Programming with SQL (2025–2031), Database Foundations',
       },
       { title: 'Cisco PCAP', detail: 'Programming Essentials in Python' },
-      { title: 'Scrum Fundamentals Certified', detail: 'Vabro.ai & VMEdu' },
     ],
   },
   footer: {
@@ -372,8 +362,8 @@ const es: Copy = {
     eyebrow: 'Ingeniero de Backend e Infraestructura · Java · Python · Seguridad desde el diseño',
     headline: ['Construyo sistemas', 'backend que no tienen', 'permitido fallar'],
     paragraphs: [
-      'Soy ingeniero de backend e infraestructura. Hoy trabajo en el riel de pagos inmediatos de BBVA (ACH, Bre-B y Redeban), donde una transacción tiene unos cientos de milisegundos para resolverse y «lo arreglamos mañana» no es una opción. Trabajo con Java y Spring Boot, y tuve que certificarme en un estándar de desarrollo seguro antes de tocar el código.',
-      'Antes de la banca operé sistemas en producción con equipos mucho más pequeños y mucho menos margen: un servicio de streaming de cámaras 24/7, módulos de ERP y facturación, y servidores Linux de los que respondía yo personalmente a las 2 a. m. Ahí aprendí que lo interesante de este oficio no es el código. Es diseñar para el momento en que las cosas fallan. También quedé en el Top 2 de tres competencias de ingeniería en LATAM.',
+      'Trabajo en el riel de pagos inmediatos de BBVA (ACH, Bre-B y Redeban), donde una transacción tiene unos cientos de milisegundos para resolverse y «lo arreglamos mañana» no es una opción. Java y Spring Boot, con una certificación en desarrollo seguro obtenida antes de tocar el código.',
+      'Antes de la banca operé sistemas en producción con equipos pequeños: un servicio de streaming de cámaras 24/7, módulos de ERP y facturación, servidores Linux. Me enseñó a diseñar para el momento en que las cosas fallan. Top 2 en tres competencias de ingeniería en LATAM.',
     ],
     photoAlt: 'Freddy Bautista trabajando en un portátil',
   },
@@ -396,22 +386,9 @@ const es: Copy = {
         role: 'Backend Java Developer, Pagos Inmediatos',
         place: 'Bogotá · Remoto',
         story: [
-          'Trabajo en pagos inmediatos de BBVA Colombia, construyendo los servicios backend detrás de las transferencias en tiempo real por ACH, Bre-B y Redeban. La arquitectura es distribuida y orientada a eventos, con librerías de orquestación e integración con el host, así que buena parte de mi trabajo es pensar qué pasa entre servicios cuando algo falla.',
-          'Pruebo todo con JUnit y Mockito, y SonarQube revisa cada cambio en cobertura, code smells nuevos y complejidad. La revisión entre pares, los métodos pequeños y las reglas de análisis estático (como no capturar NullPointerException) son simplemente la forma de escribir código. Entregamos en Scrum, con planeación de releases, planes de rollback y checklists de preparación para producción, y cuando un pago falla entre servicios lo sigo de punta a punta y reviso la evidencia en base de datos para encontrar dónde.',
+          'Construyo los servicios backend detrás de las transferencias en tiempo real por ACH, Bre-B y Redeban, en una arquitectura distribuida y orientada a eventos. Cada cambio se prueba (JUnit, Mockito), pasa por SonarQube y sale con plan de rollback; cuando un pago falla entre servicios, lo sigo de punta a punta.',
         ],
-        tags: [
-          'Java',
-          'Event-driven architecture',
-          'Distributed systems',
-          'Oracle',
-          'JUnit',
-          'Mockito',
-          'Maven',
-          'SonarQube',
-          'Scrum',
-          'Clean Code',
-          'Code Review',
-        ],
+        tags: ['Java', 'Event-driven architecture', 'Distributed systems', 'Oracle', 'JUnit', 'SonarQube', 'Scrum'],
       },
       {
         dates: 'Feb 2025 – Feb 2026',
@@ -419,10 +396,9 @@ const es: Copy = {
         role: 'Desarrollador Fullstack',
         place: 'Bogotá · Presencial',
         story: [
-          'Lo que más orgullo me da de ESCOLE es una plataforma de gestión de equipos que terminaron usando más de cinco departamentos completos, entregada con pruebas y documentación. Alrededor de ella fui responsable del backend en producción de punta a punta: APIs REST en Docker, servidores Linux y la resolución de incidentes cuando ocurrían.',
-          'También construí un servicio de streaming 24/7 en FastAPI para 16 cámaras (RTSP a HLS) y llevé Git a proyectos que nunca lo habían usado.',
+          'Construí una plataforma de gestión de equipos que más de cinco departamentos adoptaron, entregada con pruebas y documentación, y fui responsable del backend en producción de punta a punta: APIs REST en Docker, servidores Linux e incidentes. También construí un servicio de streaming 24/7 en FastAPI para 16 cámaras.',
         ],
-        tags: ['React', 'Google Apps Script', 'Python', 'FastAPI', 'Docker', 'Linux', 'PostgreSQL'],
+        tags: ['React', 'Google Apps Script', 'FastAPI', 'Docker', 'Linux', 'PostgreSQL'],
       },
       {
         dates: 'Feb 2024 – Feb 2025',
@@ -430,9 +406,9 @@ const es: Copy = {
         role: 'Desarrollador Java',
         place: 'Bogotá · Remoto',
         story: [
-          'Construí un ERP multimódulo en Java 17 y Spring Boot con JPA/Hibernate que cubre facturación, contratos y clientes. Diseñé el esquema de PostgreSQL y la API REST sobre contratos OpenAPI, y levanté los requisitos directamente con el negocio, entregando en las fechas comprometidas.',
+          'Construí un ERP multimódulo en Java 17 y Spring Boot (facturación, contratos, clientes): esquema de PostgreSQL, API REST sobre contratos OpenAPI y requisitos levantados directamente con el negocio.',
         ],
-        tags: ['Java 17', 'Spring Boot', 'JPA/Hibernate', 'PostgreSQL', 'OpenAPI'],
+        tags: ['Java 17', 'Spring Boot', 'PostgreSQL', 'OpenAPI'],
       },
     ],
   },
@@ -442,24 +418,24 @@ const es: Copy = {
     groups: [
       {
         title: 'Producción',
-        note: 'Usadas en sistemas con usuarios reales y en productos entregados bajo condiciones de competencia',
+        note: 'Usuarios reales y productos entregados',
         items: [
           'Java 17', 'Spring Boot', 'Spring Security', 'REST / OpenAPI', 'JPA/Hibernate', 'Python',
-          'FastAPI', 'PostgreSQL', 'Docker', 'Linux', 'Git', 'Maven', 'JUnit', 'Mockito',
-          'React', 'TypeScript', 'Supabase', 'n8n', 'Integraciones LLM (OpenAI, Gemini, LiteLLM)',
+          'FastAPI', 'PostgreSQL', 'Docker', 'Linux', 'React', 'TypeScript', 'Supabase', 'n8n',
+          'Integraciones LLM (OpenAI, Gemini, LiteLLM)',
         ],
       },
       {
         title: 'Infraestructura y prácticas',
-        note: 'Cómo se entrega el trabajo y se mantiene vivo',
+        note: 'Cómo se entrega y se mantiene vivo',
         items: [
-          'CI/CD', 'Jenkins', 'Artifactory', 'Bash', 'SonarQube', 'Secure SDLC', 'Code review',
-          'Agile / Scrum', 'Redis', 'Oracle SQL', 'Fundamentos de AWS',
+          'CI/CD', 'Jenkins', 'Artifactory', 'Git', 'Bash', 'SonarQube', 'JUnit / Mockito', 'Secure SDLC',
+          'Redis', 'Oracle SQL', 'Fundamentos de AWS',
         ],
       },
       {
         title: 'Conocimiento práctico',
-        note: 'Usadas en proyectos, aún sin profundidad de producción',
+        note: 'En proyectos, aún no en producción',
         items: ['Go', 'Rust'],
       },
     ],
@@ -469,14 +445,15 @@ const es: Copy = {
     title: 'Ingeniería competitiva',
     hostLabel: 'Evento',
     roleLabel: 'Rol',
+    evidenceLabel: 'Evidencia',
     list: [
       {
         name: 'EcoSentinel',
         subtitle: 'Plataforma de predicción energética',
         place: 'Top 2',
-        event: 'IAMinds Hackathon 2026 · alcance LATAM, organizado por Indra Group',
+        event: 'IAMinds Hackathon 2026 · LATAM · Indra Group',
         context:
-          'Construido para la UPTC (Universidad Pedagógica y Tecnológica de Colombia). Realizado durante el lanzamiento de NovaIA, el primer Centro de Excelencia en IA de Indra en Colombia.',
+          'Construido para la UPTC, en el lanzamiento de NovaIA, el Centro de Excelencia en IA de Indra.',
         role: 'Tech Lead y Desarrollador Backend',
         stats: [
           { value: '80', label: 'equipos' },
@@ -484,7 +461,7 @@ const es: Copy = {
           { value: '275k+', label: 'registros procesados' },
         ],
         description:
-          'Diseño del sistema y arquitectura backend de una plataforma de predicción de consumo energético para la UPTC: 20 modelos de machine learning para 4 sedes universitarias (más de 31.500 estudiantes), consultable por WhatsApp, con análisis de causa raíz asistido por LLM para anomalías operativas. Construida en 36 horas.',
+          'Arquitectura backend de una plataforma de predicción energética para 4 sedes y más de 31.500 estudiantes: 20 modelos de ML, consultable por WhatsApp, con análisis de causa raíz de anomalías asistido por LLM. Construida en 36 horas.',
         links: [
           {
             label: 'GitHub',
@@ -503,7 +480,7 @@ const es: Copy = {
           { value: '300+', label: 'postulantes' },
         ],
         description:
-          'Una capa de seguridad que aplica autorización por cadena de delegación a agentes de IA que llaman servidores MCP: un motor de decisión determinista en Rust con auditoría formal de políticas basada en Z3. La autorización tratada como una propiedad demostrable, no como una corazonada en tiempo de ejecución.',
+          'Una capa de seguridad que autoriza lo que los agentes de IA pueden hacer al llamar servidores MCP: un motor de decisión determinista en Rust con auditoría formal de políticas basada en Z3.',
         links: [
           { label: 'GitHub', href: 'https://github.com/FreddyB200/Roxy' },
           { label: 'SDK en PyPI', href: 'https://pypi.org/project/roxy-guard/' },
@@ -515,7 +492,7 @@ const es: Copy = {
         subtitle: 'Agente de campañas con IA',
         place: 'Top 2',
         event: 'The GTM Hackathon 2026 · 30x',
-        context: 'Colombia y México. Organizado por 30x, cofundado por Andrés Bilbao (cofundador de Rappi).',
+        context: 'Colombia y México, organizado por 30x.',
         role: 'Tech Lead',
         stats: [
           { value: '50', label: 'equipos' },
@@ -554,13 +531,12 @@ const es: Copy = {
     items: [
       { title: 'Certificación en Desarrollo Seguro', detail: 'Estándar interno de BBVA, 88,37/100' },
       { title: 'Makers Fellowship 2026', detail: 'Coding Track, tasa de aceptación <1%' },
-      { title: 'Aspire Leaders Program', detail: 'Fundado en Harvard University por profesores de HBS' },
+      { title: 'Aspire Leaders Program', detail: 'Programa de liderazgo fundado en Harvard' },
       {
         title: 'Oracle',
-        detail: 'Database Programming with SQL (2025–2031), Database Foundations, Database Design',
+        detail: 'Database Programming with SQL (2025–2031), Database Foundations',
       },
       { title: 'Cisco PCAP', detail: 'Programming Essentials in Python' },
-      { title: 'Scrum Fundamentals Certified', detail: 'Vabro.ai y VMEdu' },
     ],
   },
   footer: {
