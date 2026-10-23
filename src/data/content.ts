@@ -270,6 +270,7 @@ const en: Copy = {
             href: 'https://github.com/Olinky-HackDay-Indra-Hackaton/ecosentinel-uptc',
           },
         ],
+        evidence: [{ label: 'NovaIA launch coverage (Forbes Colombia)', href: 'https://forbes.co/2026/02/19/ia/inauguran-centro-de-inteligencia-artificial-en-tunja-operara-para-america-latina' }],
         diagram: {
           label: 'How a WhatsApp question becomes a forecast',
           steps: [
@@ -510,6 +511,7 @@ const es: Copy = {
             href: 'https://github.com/Olinky-HackDay-Indra-Hackaton/ecosentinel-uptc',
           },
         ],
+        evidence: [{ label: 'Lanzamiento de NovaIA (Forbes Colombia)', href: 'https://forbes.co/2026/02/19/ia/inauguran-centro-de-inteligencia-artificial-en-tunja-operara-para-america-latina' }],
         diagram: {
           label: 'Cómo una pregunta por WhatsApp se convierte en un pronóstico',
           steps: [
