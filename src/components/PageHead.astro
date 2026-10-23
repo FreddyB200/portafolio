@@ -1,0 +1,40 @@
+---
+import { copy, pathFor, type Lang, type PageKey } from '../data/content';
+
+interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  lang: Lang;
+  crumbs: Crumb[];
+  label?: string;
+  title: string;
+  lead?: string;
+}
+const { lang, crumbs, label, title, lead } = Astro.props;
+const ui = copy[lang].ui;
+const all: Crumb[] = [{ label: ui.home, href: pathFor(lang) }, ...crumbs];
+---
+
+<section id="top" class="hero-wash wrap pb-10 pt-10 md:pb-14 md:pt-16">
+  <nav aria-label={ui.breadcrumb}>
+    <ol class="meta flex flex-wrap items-center gap-x-3 gap-y-1 text-ink-soft">
+      {
+        all.map((c, i) => (
+          <li class="flex items-center gap-3">
+            {i > 0 && <span aria-hidden="true">/</span>}
+            {c.href ? (
+              <a href={c.href} class="text-ink-soft underline decoration-1 hover:text-accent-ink">{c.label}</a>
+            ) : (
+              <span aria-current="page" class="text-ink">{c.label}</span>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+  {label && <p class="meta sec-label mt-10 text-ink-soft">{label}</p>}
+  <h1 class:list={['text-[clamp(2.5rem,6vw,5.5rem)] [text-wrap:balance]', label ? 'mt-4' : 'mt-10']}>{title}</h1>
+  {lead && <p class="prose-lg mt-6 max-w-[48rem] text-ink-soft">{lead}</p>}
+</section>

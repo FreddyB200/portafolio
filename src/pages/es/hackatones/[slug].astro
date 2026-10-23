@@ -1,0 +1,9 @@
+---
+import HackathonView from '../../../views/HackathonView.astro';
+import { copy } from '../../../data/content';
+
+export const getStaticPaths = () => copy.es.competitions.list.map((p) => ({ params: { slug: p.slug } }));
+const { slug } = Astro.params;
+---
+
+<HackathonView lang="es" slug={slug!} />

@@ -61,7 +61,41 @@ export interface SkillGroup {
   items: string[];
 }
 
+/** Optional long-form story for a detail page. Sections without text are not rendered. */
+export interface StorySections {
+  setup?: string[];
+  build?: string[];
+  outcome?: string[];
+}
+
+export type PageKey = 'home' | 'about' | 'hackathons' | 'projects';
+
+export interface NavItem {
+  label: string;
+  page: PageKey;
+  hash?: string;
+}
+
+export interface Project {
+  slug: string;
+  name: string;
+  subtitle: string;
+  company: string;
+  period: string;
+  role: string;
+  summary: string;
+  stack?: string[];
+  story?: StorySections;
+  links: { label: string; href: string }[];
+  diagram?: { label: string; steps: { title: string; detail: string }[]; footnote?: string };
+  evidence?: { label: string; href: string }[];
+  images?: { file: string; alt: string }[];
+}
+
 export interface Podium {
+  /** URL segment of the detail page, e.g. /hackathons/roxy/ */
+  slug: string;
+  story?: StorySections;
   name: string;
   subtitle: string;
   place: string;
@@ -100,8 +134,77 @@ export interface Copy {
     copied: string;
     copyEmailLabel: string;
     noJs: string;
+    menu: string;
+    menuClose: string;
+    home: string;
+    breadcrumb: string;
   };
-  nav: { label: string; href: string }[];
+  nav: NavItem[];
+  aboutPreview: { label: string; text: string; cta: string };
+  about: {
+    metaTitle: string;
+    metaDescription: string;
+    label: string;
+    title: string;
+    intro: string[];
+    acts: { label: string; title: string; blurb: string }[];
+    hackathonsHeading: string;
+  };
+  pages: {
+    story: { setup: string; build: string; outcome: string };
+    hackathons: {
+      metaTitle: string;
+      metaDescription: string;
+      label: string;
+      title: string;
+      intro: string;
+      readStory: string;
+      all: string;
+      previous: string;
+      next: string;
+      linksLabel: string;
+      galleryLabel: string;
+    };
+    projects: {
+      metaTitle: string;
+      metaDescription: string;
+      label: string;
+      title: string;
+      intro: string;
+      readStory: string;
+      all: string;
+      previous: string;
+      next: string;
+      periodLabel: string;
+      companyLabel: string;
+      roleLabel: string;
+      stackLabel: string;
+      linksLabel: string;
+      galleryLabel: string;
+      list: Project[];
+    };
+  };
+  contact: {
+    label: string;
+    formTitle: string;
+    name: string;
+    email: string;
+    message: string;
+    emailHint: string;
+    send: string;
+    sending: string;
+    sent: string;
+    errorPrefix: string;
+    otherWays: string;
+    errors: {
+      name: string;
+      email: string;
+      message: string;
+      rate: string;
+      server: string;
+      network: string;
+    };
+  };
   hero: { eyebrow: string; headline: string[]; paragraphs: string[]; photoAlt: string };
   stats: { label: string; value: string; note?: string }[];
   experience: {
@@ -152,14 +255,159 @@ const en: Copy = {
     copy: 'Copy email',
     copied: 'Copied',
     copyEmailLabel: 'Copy email address to clipboard',
-    noJs: 'The email address needs JavaScript. Reach me on LinkedIn instead.',
+    noJs: 'The email address and the form need JavaScript. Reach me on LinkedIn instead.',
+    menu: 'Menu',
+    menuClose: 'Close menu',
+    home: 'Home',
+    breadcrumb: 'You are here',
   },
   nav: [
-    { label: 'Experience', href: '#experience' },
-    { label: 'Skills', href: '#skills' },
-    { label: 'Competitions', href: '#competitions' },
-    { label: 'Credentials', href: '#credentials' },
+    { label: 'About', page: 'about' },
+    { label: 'Experience', page: 'home', hash: 'experience' },
+    { label: 'Skills', page: 'home', hash: 'skills' },
+    { label: 'Hackathons', page: 'hackathons' },
+    { label: 'Projects', page: 'projects' },
+    { label: 'Contact', page: 'home', hash: 'contact' },
   ],
+  aboutPreview: {
+    label: 'About',
+    text: 'From a multi-module Java ERP in 2024 to real-time payments at BBVA, with three Top 2 finishes along the way. The longer story, with recognitions and credentials.',
+    cta: 'More about me',
+  },
+  about: {
+    metaTitle: 'About | Freddy Bautista',
+    metaDescription:
+      'The path of Freddy Bautista, backend and infrastructure engineer: from a multi-module Java ERP to real-time payments at BBVA, plus recognitions and credentials.',
+    label: 'About',
+    title: 'About me',
+    intro: [
+      'Backend and infrastructure engineer in Bogotá. This is the longer version: where I started, what shaped the way I build, and where I am now.',
+    ],
+    acts: [
+      {
+        label: '01 / Beginning',
+        title: 'Starting out',
+        blurb: 'Systems engineering student in 2024, and a first job building a multi-module ERP in Java.',
+      },
+      {
+        label: '02 / Middle',
+        title: 'Owning the backend',
+        blurb: 'Production backends at ESCOLE, plus three engineering competitions in 2026 that ended Top 2.',
+      },
+      {
+        label: '03 / Now',
+        title: 'Payments in real time',
+        blurb: 'Backend services for instant transfers at BBVA Colombia, via Inetum.',
+      },
+    ],
+    hackathonsHeading: 'Competitions',
+  },
+  pages: {
+    story: { setup: '01 / Context', build: '02 / How it was built', outcome: '03 / Result' },
+    hackathons: {
+      metaTitle: 'Hackathons | Freddy Bautista',
+      metaDescription:
+        'Three Top 2 finishes in LATAM engineering competitions in 2026: EcoSentinel, Roxy and Adkio. Context, architecture and results.',
+      label: 'Podium finishes · 2026',
+      title: 'Hackathons',
+      intro:
+        'Three engineering competitions in 2026, three Top 2 finishes. Each story covers the context, how it was built and the result.',
+      readStory: 'Read the full story',
+      all: 'All hackathons',
+      previous: 'Previous',
+      next: 'Next',
+      linksLabel: 'Links',
+      galleryLabel: 'Photos',
+    },
+    projects: {
+      metaTitle: 'Projects | Freddy Bautista',
+      metaDescription:
+        'Selected projects by Freddy Bautista: a multi-module Java ERP, an equipment management platform and a 24/7 camera streaming service.',
+      label: 'Selected work',
+      title: 'Projects',
+      intro: 'Systems I built at work, with the role I played and the stack behind each one.',
+      readStory: 'Read the details',
+      all: 'All projects',
+      previous: 'Previous',
+      next: 'Next',
+      periodLabel: 'Period',
+      companyLabel: 'Company',
+      roleLabel: 'Role',
+      stackLabel: 'Stack',
+      linksLabel: 'Links',
+      galleryLabel: 'Screenshots',
+      // TODO(freddy): these three come from the Experience section. Replace or extend with the
+      // projects you want to show (problem, decisions, result, screenshots, diagrams).
+      list: [
+        {
+          slug: 'equipment-platform',
+          name: 'Equipment management platform',
+          subtitle: 'Internal platform',
+          company: 'ESCOLE Experiencias Educativas',
+          period: 'Feb 2025 – Feb 2026',
+          role: 'Fullstack Developer',
+          summary: 'An equipment management platform that more than five departments adopted, shipped with tests and documentation.',
+          story: {
+            setup: ['Built at ESCOLE Experiencias Educativas, Bogotá, on-site.'],
+            build: ['I owned the production backend end to end: REST APIs on Docker, Linux servers and incidents.'],
+            outcome: ['More than five departments adopted it. It shipped with tests and documentation.'],
+          },
+          links: [],
+        },
+        {
+          slug: 'camera-streaming',
+          name: '24/7 camera streaming service',
+          subtitle: 'Live video for 16 cameras',
+          company: 'ESCOLE Experiencias Educativas',
+          period: 'Feb 2025 – Feb 2026',
+          role: 'Fullstack Developer',
+          summary: 'A streaming service in FastAPI that runs around the clock for 16 cameras.',
+          stack: ['FastAPI'],
+          story: {
+            setup: ['Built at ESCOLE Experiencias Educativas, Bogotá, on-site.'],
+            build: ['A 24/7 streaming service in FastAPI for 16 cameras.'],
+          },
+          links: [],
+        },
+        {
+          slug: 'multi-module-erp',
+          name: 'Multi-module ERP',
+          subtitle: 'Billing, contracts and clients',
+          company: 'Serviportenal SAS',
+          period: 'Feb 2024 – Feb 2025',
+          role: 'Java Developer',
+          summary: 'A multi-module ERP in Java 17 and Spring Boot covering billing, contracts and clients.',
+          stack: ['Java 17', 'Spring Boot', 'PostgreSQL', 'OpenAPI'],
+          story: {
+            setup: ['Requirements gathered directly with the business at Serviportenal SAS.'],
+            build: ['A PostgreSQL schema and a REST API built against OpenAPI contracts.'],
+          },
+          links: [],
+        },
+      ],
+    },
+  },
+  contact: {
+    label: 'Contact',
+    formTitle: 'Send me a message',
+    name: 'Name',
+    email: 'Your email',
+    message: 'Message',
+    emailHint: 'Only used to reply to you.',
+    send: 'Send message',
+    sending: 'Sending…',
+    sent: 'Message sent. Thank you.',
+    errorPrefix: 'Error',
+    otherWays: 'Or reach me directly',
+    errors: {
+      name: 'Enter your name.',
+      email: 'Enter a valid email address.',
+      message: 'Write at least 10 characters.',
+      rate: 'Too many messages from this connection. Try again later.',
+      server: 'The message could not be sent. Please reach me on LinkedIn.',
+      network: 'No connection. Check your network and try again.',
+    },
+  },
   hero: {
     eyebrow: 'Backend & Infrastructure Engineer · Java · Python · Secure by design',
     headline: ['I build backend systems', 'that are not allowed', 'to fail'],
@@ -250,6 +498,7 @@ const en: Copy = {
     evidenceLabel: 'Evidence',
     list: [
       {
+        slug: 'ecosentinel',
         name: 'EcoSentinel',
         subtitle: 'Energy Prediction Platform',
         place: 'Top 2',
@@ -283,6 +532,7 @@ const en: Copy = {
         },
       },
       {
+        slug: 'roxy',
         name: 'Roxy',
         subtitle: 'Security Gateway for AI Agents',
         place: 'Top 2',
@@ -311,6 +561,7 @@ const en: Copy = {
         },
       },
       {
+        slug: 'adkio',
         name: 'Adkio',
         subtitle: 'AI Campaign Agent',
         place: 'Top 2',
@@ -393,14 +644,159 @@ const es: Copy = {
     copy: 'Copiar correo',
     copied: 'Copiado',
     copyEmailLabel: 'Copiar el correo al portapapeles',
-    noJs: 'El correo necesita JavaScript. Escríbeme por LinkedIn.',
+    noJs: 'El correo y el formulario necesitan JavaScript. Escríbeme por LinkedIn.',
+    menu: 'Menú',
+    menuClose: 'Cerrar menú',
+    home: 'Inicio',
+    breadcrumb: 'Estás aquí',
   },
   nav: [
-    { label: 'Experiencia', href: '#experience' },
-    { label: 'Habilidades', href: '#skills' },
-    { label: 'Competencias', href: '#competitions' },
-    { label: 'Credenciales', href: '#credentials' },
+    { label: 'Sobre mí', page: 'about' },
+    { label: 'Experiencia', page: 'home', hash: 'experience' },
+    { label: 'Habilidades', page: 'home', hash: 'skills' },
+    { label: 'Hackatones', page: 'hackathons' },
+    { label: 'Proyectos', page: 'projects' },
+    { label: 'Contacto', page: 'home', hash: 'contact' },
   ],
+  aboutPreview: {
+    label: 'Sobre mí',
+    text: 'De un ERP multimódulo en Java en 2024 a pagos en tiempo real en BBVA, con tres podios Top 2 en el camino. La historia completa, con reconocimientos y credenciales.',
+    cta: 'Conoce más sobre mí',
+  },
+  about: {
+    metaTitle: 'Sobre mí | Freddy Bautista',
+    metaDescription:
+      'La trayectoria de Freddy Bautista, ingeniero de backend e infraestructura: de un ERP multimódulo en Java a pagos en tiempo real en BBVA, con reconocimientos y credenciales.',
+    label: 'Sobre mí',
+    title: 'Conoce más sobre mí',
+    intro: [
+      'Ingeniero de backend e infraestructura en Bogotá. Esta es la versión larga: dónde empecé, qué moldeó mi forma de construir y dónde estoy hoy.',
+    ],
+    acts: [
+      {
+        label: '01 / Inicio',
+        title: 'Los primeros pasos',
+        blurb: 'Estudiante de Ingeniería de Sistemas en 2024 y un primer empleo construyendo un ERP multimódulo en Java.',
+      },
+      {
+        label: '02 / Nudo',
+        title: 'Responsable del backend',
+        blurb: 'Backends en producción en ESCOLE y tres competencias de ingeniería en 2026 que terminaron en Top 2.',
+      },
+      {
+        label: '03 / Hoy',
+        title: 'Pagos en tiempo real',
+        blurb: 'Servicios backend para transferencias inmediatas en BBVA Colombia, vía Inetum.',
+      },
+    ],
+    hackathonsHeading: 'Competencias',
+  },
+  pages: {
+    story: { setup: '01 / Contexto', build: '02 / Cómo se construyó', outcome: '03 / Resultado' },
+    hackathons: {
+      metaTitle: 'Hackatones | Freddy Bautista',
+      metaDescription:
+        'Tres podios Top 2 en competencias de ingeniería en LATAM en 2026: EcoSentinel, Roxy y Adkio. Contexto, arquitectura y resultados.',
+      label: 'Podios · 2026',
+      title: 'Hackatones',
+      intro:
+        'Tres competencias de ingeniería en 2026, tres podios Top 2. Cada historia cubre el contexto, cómo se construyó y el resultado.',
+      readStory: 'Leer la historia completa',
+      all: 'Todos los hackatones',
+      previous: 'Anterior',
+      next: 'Siguiente',
+      linksLabel: 'Enlaces',
+      galleryLabel: 'Fotos',
+    },
+    projects: {
+      metaTitle: 'Proyectos | Freddy Bautista',
+      metaDescription:
+        'Proyectos seleccionados de Freddy Bautista: un ERP multimódulo en Java, una plataforma de gestión de equipos y un servicio de streaming de cámaras 24/7.',
+      label: 'Trabajo seleccionado',
+      title: 'Proyectos',
+      intro: 'Sistemas que construí en el trabajo, con el rol que tuve y el stack detrás de cada uno.',
+      readStory: 'Ver los detalles',
+      all: 'Todos los proyectos',
+      previous: 'Anterior',
+      next: 'Siguiente',
+      periodLabel: 'Periodo',
+      companyLabel: 'Empresa',
+      roleLabel: 'Rol',
+      stackLabel: 'Stack',
+      linksLabel: 'Enlaces',
+      galleryLabel: 'Capturas',
+      // TODO(freddy): estos tres salen de la sección Experiencia. Reemplázalos o amplíalos con los
+      // proyectos que quieras mostrar (problema, decisiones, resultado, capturas, diagramas).
+      list: [
+        {
+          slug: 'equipment-platform',
+          name: 'Plataforma de gestión de equipos',
+          subtitle: 'Plataforma interna',
+          company: 'ESCOLE Experiencias Educativas',
+          period: 'Feb 2025 – Feb 2026',
+          role: 'Desarrollador Fullstack',
+          summary: 'Una plataforma de gestión de equipos que más de cinco departamentos adoptaron, entregada con pruebas y documentación.',
+          story: {
+            setup: ['Construida en ESCOLE Experiencias Educativas, Bogotá, de forma presencial.'],
+            build: ['Fui responsable del backend en producción de punta a punta: APIs REST en Docker, servidores Linux e incidentes.'],
+            outcome: ['Más de cinco departamentos la adoptaron. Se entregó con pruebas y documentación.'],
+          },
+          links: [],
+        },
+        {
+          slug: 'camera-streaming',
+          name: 'Servicio de streaming de cámaras 24/7',
+          subtitle: 'Video en vivo para 16 cámaras',
+          company: 'ESCOLE Experiencias Educativas',
+          period: 'Feb 2025 – Feb 2026',
+          role: 'Desarrollador Fullstack',
+          summary: 'Un servicio de streaming en FastAPI que funciona las 24 horas para 16 cámaras.',
+          stack: ['FastAPI'],
+          story: {
+            setup: ['Construido en ESCOLE Experiencias Educativas, Bogotá, de forma presencial.'],
+            build: ['Un servicio de streaming 24/7 en FastAPI para 16 cámaras.'],
+          },
+          links: [],
+        },
+        {
+          slug: 'multi-module-erp',
+          name: 'ERP multimódulo',
+          subtitle: 'Facturación, contratos y clientes',
+          company: 'Serviportenal SAS',
+          period: 'Feb 2024 – Feb 2025',
+          role: 'Desarrollador Java',
+          summary: 'Un ERP multimódulo en Java 17 y Spring Boot para facturación, contratos y clientes.',
+          stack: ['Java 17', 'Spring Boot', 'PostgreSQL', 'OpenAPI'],
+          story: {
+            setup: ['Requisitos levantados directamente con el negocio en Serviportenal SAS.'],
+            build: ['Un esquema de PostgreSQL y una API REST construida sobre contratos OpenAPI.'],
+          },
+          links: [],
+        },
+      ],
+    },
+  },
+  contact: {
+    label: 'Contacto',
+    formTitle: 'Envíame un mensaje',
+    name: 'Nombre',
+    email: 'Tu correo',
+    message: 'Mensaje',
+    emailHint: 'Solo se usa para responderte.',
+    send: 'Enviar mensaje',
+    sending: 'Enviando…',
+    sent: 'Mensaje enviado. Gracias.',
+    errorPrefix: 'Error',
+    otherWays: 'O escríbeme directamente',
+    errors: {
+      name: 'Escribe tu nombre.',
+      email: 'Escribe un correo válido.',
+      message: 'Escribe al menos 10 caracteres.',
+      rate: 'Demasiados mensajes desde esta conexión. Inténtalo más tarde.',
+      server: 'No se pudo enviar el mensaje. Escríbeme por LinkedIn.',
+      network: 'Sin conexión. Revisa tu red e inténtalo de nuevo.',
+    },
+  },
   hero: {
     eyebrow: 'Ingeniero de Backend e Infraestructura · Java · Python · Seguridad desde el diseño',
     headline: ['Construyo sistemas', 'backend que no tienen', 'permitido fallar'],
@@ -491,6 +887,7 @@ const es: Copy = {
     evidenceLabel: 'Evidencia',
     list: [
       {
+        slug: 'ecosentinel',
         name: 'EcoSentinel',
         subtitle: 'Plataforma de predicción energética',
         place: 'Top 2',
@@ -524,6 +921,7 @@ const es: Copy = {
         },
       },
       {
+        slug: 'roxy',
         name: 'Roxy',
         subtitle: 'Gateway de seguridad para agentes de IA',
         place: 'Top 2',
@@ -552,6 +950,7 @@ const es: Copy = {
         },
       },
       {
+        slug: 'adkio',
         name: 'Adkio',
         subtitle: 'Agente de campañas con IA',
         place: 'Top 2',
@@ -611,5 +1010,17 @@ const es: Copy = {
 
 export const copy: Record<Lang, Copy> = { en, es };
 
-/** Path of a page for a given language (English lives at the root). */
-export const pathFor = (lang: Lang) => (lang === 'en' ? '/' : '/es/');
+/** Base path of every page, per language (English lives at the root, Spanish under /es/). */
+const routes: Record<PageKey, Record<Lang, string>> = {
+  home: { en: '/', es: '/es/' },
+  about: { en: '/about/', es: '/es/sobre-mi/' },
+  hackathons: { en: '/hackathons/', es: '/es/hackatones/' },
+  projects: { en: '/projects/', es: '/es/proyectos/' },
+};
+
+/** Path of a page for a given language; `slug` selects a detail page (hackathon or project). */
+export const pathFor = (lang: Lang, page: PageKey = 'home', slug?: string) =>
+  routes[page][lang] + (slug ? `${slug}/` : '');
+
+/** Link to a page, optionally to a section of it (`#hash`). */
+export const hrefFor = (lang: Lang, page: PageKey, hash?: string) => pathFor(lang, page) + (hash ? `#${hash}` : '');

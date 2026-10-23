@@ -1,0 +1,10 @@
+---
+import ProjectView from '../../../views/ProjectView.astro';
+import { copy } from '../../../data/content';
+
+export const getStaticPaths = () =>
+  copy.es.pages.projects.list.filter((p) => p.story).map((p) => ({ params: { slug: p.slug } }));
+const { slug } = Astro.params;
+---
+
+<ProjectView lang="es" slug={slug!} />

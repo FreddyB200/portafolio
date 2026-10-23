@@ -1,0 +1,148 @@
+---
+import { copy, links, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang].contact;
+
+const field = 'mt-2 block w-full border-[1.5px] border-white bg-transparent px-4 py-3 font-serif text-[1.0625rem] text-white';
+---
+
+<!--
+  Posts JSON to /api/contact (api/contact.ts). Status and errors are always written as text, never
+  only as colour. The hidden "website" field is a honeypot; "ts" lets the server reject instant posts.
+-->
+<form
+  class="contact-form"
+  novalidate
+  data-endpoint="/api/contact"
+  data-sending={c.sending}
+  data-sent={c.sent}
+  data-error-prefix={c.errorPrefix}
+  data-errors={JSON.stringify(c.errors)}
+  data-linkedin={links.linkedin}
+>
+  <h3 class="font-display text-[clamp(1.5rem,2.2vw,2.25rem)] font-bold leading-tight tracking-tight">{c.formTitle}</h3>
+
+  <div class="mt-6 grid gap-5 md:grid-cols-2">
+    <div>
+      <label for="cf-name" class="meta">{c.name}</label>
+      <input id="cf-name" name="name" type="text" autocomplete="name" required maxlength="100" class={field} aria-describedby="cf-name-err" />
+      <p id="cf-name-err" class="meta mt-1.5 min-h-[1.5em] text-white" data-err="name"></p>
+    </div>
+    <div>
+      <label for="cf-email" class="meta">{c.email}</label>
+      <input id="cf-email" name="email" type="email" autocomplete="email" required maxlength="254" class={field} aria-describedby="cf-email-hint cf-email-err" />
+      <p id="cf-email-hint" class="mt-1.5 text-[0.9375rem] leading-snug text-white">{c.emailHint}</p>
+      <p id="cf-email-err" class="meta mt-1 min-h-[1.5em] text-white" data-err="email"></p>
+    </div>
+  </div>
+
+  <div class="mt-1">
+    <label for="cf-message" class="meta">{c.message}</label>
+    <textarea id="cf-message" name="message" rows="6" required maxlength="5000" class:list={[field, 'resize-y']} aria-describedby="cf-message-err"></textarea>
+    <p id="cf-message-err" class="meta mt-1.5 min-h-[1.5em] text-white" data-err="message"></p>
+  </div>
+
+  <!-- Honeypot: hidden from people and assistive tech, bots fill it. -->
+  <div aria-hidden="true" class="absolute -left-[9999px] h-0 w-0 overflow-hidden">
+    <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <input type="hidden" name="ts" value="" />
+
+  <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3">
+    <button type="submit" class="meta inline-flex cursor-pointer items-center gap-2.5 border-[1.5px] border-white bg-white px-6 py-4 text-accent hover:bg-transparent hover:text-white disabled:cursor-wait disabled:opacity-70">
+      <span data-send-label>{c.send}</span><span aria-hidden="true"> →</span>
+    </button>
+    <p class="meta min-h-[1.5em] text-white" role="status" aria-live="polite" data-form-status></p>
+  </div>
+</form>
+
+<style>
+  .contact-form {
+    position: relative;
+  }
+  .contact-form :is(input, textarea):focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+  .contact-form [aria-invalid='true'] {
+    border-width: 3px;
+  }
+</style>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('form.contact-form');
+  if (form) {
+    const msg = JSON.parse(form.dataset.errors ?? '{}') as Record<string, string>;
+    const prefix = form.dataset.errorPrefix ?? 'Error';
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const label = form.querySelector<HTMLElement>('[data-send-label]')!;
+    const sendText = label.textContent ?? '';
+    const ts = form.elements.namedItem('ts') as HTMLInputElement;
+    const fields = ['name', 'email', 'message'] as const;
+    const input = (n: string) => form.elements.namedItem(n) as HTMLInputElement | HTMLTextAreaElement;
+
+    // Time the form was shown: the server rejects posts that arrive implausibly fast.
+    ts.value = String(Date.now());
+
+    const showError = (name: string, on: boolean) => {
+      const out = form.querySelector<HTMLElement>(`[data-err="${name}"]`);
+      if (out) out.textContent = on ? `${prefix}: ${msg[name]}` : '';
+      input(name).setAttribute('aria-invalid', on ? 'true' : 'false');
+    };
+    const validate = (name: (typeof fields)[number]) => {
+      const v = input(name).value.trim();
+      const bad = name === 'email' ? !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) : name === 'name' ? v.length < 1 : v.length < 10;
+      showError(name, bad);
+      return !bad;
+    };
+    fields.forEach((n) => input(n).addEventListener('blur', () => input(n).value && validate(n)));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.textContent = '';
+      const results = fields.map((n) => validate(n));
+      const firstBad = fields.find((_, i) => !results[i]);
+      if (firstBad) {
+        input(firstBad).focus();
+        return;
+      }
+      button.disabled = true;
+      label.textContent = form.dataset.sending ?? '';
+      try {
+        const res = await fetch(form.dataset.endpoint!, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({
+            name: input('name').value,
+            email: input('email').value,
+            message: input('message').value,
+            website: input('website').value,
+            ts: Number(ts.value),
+          }),
+        });
+        if (res.ok) {
+          form.reset();
+          ts.value = String(Date.now());
+          status.textContent = form.dataset.sent ?? '';
+        } else if (res.status === 400) {
+          const body = await res.json().catch(() => ({}));
+          const bad = Object.keys(body.fields ?? {});
+          if (bad.length) bad.forEach((n) => fields.includes(n as never) && showError(n, true));
+          else status.textContent = `${prefix}: ${msg.server}`;
+        } else {
+          status.textContent = `${prefix}: ${res.status === 429 ? msg.rate : msg.server}`;
+        }
+      } catch {
+        status.textContent = `${prefix}: ${msg.network}`;
+      } finally {
+        button.disabled = false;
+        label.textContent = sendText;
+      }
+    });
+  }
+</script>

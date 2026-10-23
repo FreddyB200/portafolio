@@ -1,5 +1,5 @@
 ---
-import { copy, type Lang } from '../data/content';
+import { copy, pathFor, type Lang } from '../data/content';
 import { Image } from 'astro:assets';
 import SectionHead from './SectionHead.astro';
 import FlowDiagram from './FlowDiagram.astro';
@@ -13,6 +13,7 @@ interface Props {
 }
 const { lang } = Astro.props;
 const c = copy[lang].competitions;
+const h = copy[lang].pages.hackathons;
 ---
 
 <section id="competitions" aria-labelledby="competitions-title" class="wrap py-16 md:py-24">
@@ -46,17 +47,20 @@ const c = copy[lang].competitions;
               ))}
             </dl>
             <p class="prose-lg mt-6 max-w-[48rem] text-ink-soft">{p.description}</p>
-            {p.links.length > 0 && (
-              <ul class="meta mt-5 flex flex-wrap gap-x-6 gap-y-2">
-                {p.links.map((l) => (
-                  <li>
-                    <a href={l.href} class="link" rel="noopener">
-                      {l.label} ↗
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <ul class="meta mt-5 flex flex-wrap gap-x-6 gap-y-2">
+              <li>
+                <a href={pathFor(lang, 'hackathons', p.slug)} class="link">
+                  {h.readStory} <span aria-hidden="true">→</span>
+                </a>
+              </li>
+              {p.links.map((l) => (
+                <li>
+                  <a href={l.href} class="link" rel="noopener">
+                    {l.label} ↗
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
           {((p.evidence?.length ?? 0) > 0 || (p.images?.length ?? 0) > 0 || p.diagram) && (
               <details class="sect border-t border-rule md:col-span-2 md:col-start-2">
@@ -106,5 +110,8 @@ const c = copy[lang].competitions;
       ))
     }
   </ol>
+  <p class="mt-10">
+    <a href={pathFor(lang, 'hackathons')} class="btn btn-accent">{h.all} <span aria-hidden="true">→</span></a>
+  </p>
 </details>
 </section>

@@ -1,0 +1,46 @@
+---
+import { copy, pathFor, type Lang } from '../data/content';
+import SectionHead from './SectionHead.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang].pages.projects;
+---
+
+<section id="projects" aria-labelledby="projects-title" class="wrap py-16 md:py-24">
+<details open class="sect">
+  <SectionHead lang={lang} id="projects-title" label={c.label} title={c.title} />
+  <ol class="focus-list border-t border-ink">
+    {
+      c.list.map((p) => (
+        <li class="row reveal grid gap-3 border-b border-rule py-8 md:grid-cols-[var(--col1)_minmax(0,1fr)_minmax(0,1.7fr)] md:gap-8 md:py-10">
+          <p class="meta text-ink-soft">{p.period}</p>
+          <div>
+            <h3 class="font-display text-[clamp(1.5rem,1.9vw,2.2rem)] font-bold leading-tight tracking-tight">{p.name}</h3>
+            <p class="mt-2 text-[clamp(1.05rem,1.15vw,1.3rem)] font-medium leading-snug">{p.subtitle}</p>
+            <p class="meta mt-2 text-ink-soft">{p.company}</p>
+          </div>
+          <div>
+            <p class="prose-lg max-w-[48rem] text-ink-soft">{p.summary}</p>
+            {p.stack && (
+              <ul class="mt-6 flex flex-wrap gap-2" aria-label={c.stackLabel}>
+                {p.stack.map((t) => <li class="tag">{t}</li>)}
+              </ul>
+            )}
+            {p.story && (
+              <p class="meta mt-6">
+                <a href={pathFor(lang, 'projects', p.slug)} class="link">{c.readStory} <span aria-hidden="true">→</span></a>
+              </p>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <p class="mt-10">
+    <a href={pathFor(lang, 'projects')} class="btn btn-accent">{c.all} <span aria-hidden="true">→</span></a>
+  </p>
+</details>
+</section>

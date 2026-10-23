@@ -1,0 +1,39 @@
+---
+import Shell from '../components/Shell.astro';
+import PageHead from '../components/PageHead.astro';
+import { copy, pathFor, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang];
+const h = c.pages.hackathons;
+---
+
+<Shell lang={lang} page="hackathons" title={h.metaTitle} description={h.metaDescription}>
+  <PageHead lang={lang} crumbs={[{ label: h.title }]} label={h.label} title={h.title} lead={h.intro} />
+
+  <ol class="focus-list wrap border-t border-ink">
+    {
+      c.competitions.list.map((p) => (
+        <li class="row reveal grid gap-6 border-b border-rule py-10 md:grid-cols-[var(--col1)_minmax(0,1fr)_minmax(0,1.7fr)] md:gap-8 md:py-12">
+          <p class="font-display text-[clamp(2.5rem,5vw,3.5rem)] font-extrabold leading-none tracking-tighter">{p.place}</p>
+          <div>
+            <h2 class="font-display text-[clamp(1.5rem,1.9vw,2.2rem)] font-bold leading-tight tracking-tight">{p.name}</h2>
+            <p class="mt-1 text-[clamp(1.05rem,1.15vw,1.3rem)] font-medium leading-snug">{p.subtitle}</p>
+            <p class="meta mt-4 text-ink-soft">{c.competitions.hostLabel}</p>
+            <p class="text-[clamp(1.05rem,1.1vw,1.25rem)] font-medium leading-snug">{p.event}</p>
+          </div>
+          <div>
+            <p class="prose-lg max-w-[48rem] text-ink-soft">{p.description}</p>
+            <p class="meta mt-5">
+              <a href={pathFor(lang, 'hackathons', p.slug)} class="link">{h.readStory} <span aria-hidden="true">→</span></a>
+            </p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="pb-16 md:pb-24"></div>
+</Shell>

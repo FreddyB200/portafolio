@@ -1,13 +1,13 @@
 ---
-import Base from '../layouts/Base.astro';
-import Header from './Header.astro';
+import Shell from './Shell.astro';
 import Hero from './Hero.astro';
 import StatBar from './StatBar.astro';
+import AboutPreview from './AboutPreview.astro';
 import Experience from './Experience.astro';
 import Skills from './Skills.astro';
 import Competitive from './Competitive.astro';
+import ProjectsPreview from './ProjectsPreview.astro';
 import Credentials from './Credentials.astro';
-import FooterCTA from './FooterCTA.astro';
 import type { Lang } from '../data/content';
 
 interface Props {
@@ -16,67 +16,13 @@ interface Props {
 const { lang } = Astro.props;
 ---
 
-<Base lang={lang}>
-  <Header lang={lang} />
-  <main id="main">
-    <Hero lang={lang} />
-    <StatBar lang={lang} />
-    <Experience lang={lang} />
-    <Skills lang={lang} />
-    <Competitive lang={lang} />
-    <Credentials lang={lang} />
-  </main>
-  <FooterCTA lang={lang} />
-</Base>
-
-<script>
-  // Email protection: the address is decoded only on a real click, never present in the HTML.
-  const decode = (t: string) => atob(t).split('').reverse().join('');
-  const copyText = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed';
-      ta.style.opacity = '0';
-      document.body.appendChild(ta);
-      ta.select();
-      document.execCommand('copy');
-      ta.remove();
-    }
-  };
-  document.addEventListener('click', async (e) => {
-    const btn = (e.target as Element).closest<HTMLElement>('[data-mail]');
-    if (!btn?.dataset.t) return;
-    const addr = decode(btn.dataset.t);
-    if (btn.dataset.mail === 'open') {
-      location.href = `mailto:${addr}`;
-      return;
-    }
-    await copyText(addr);
-    const label = btn.querySelector<HTMLElement>('[data-mail-label]');
-    const status = document.querySelector<HTMLElement>('[data-mail-status]');
-    const original = label?.textContent ?? '';
-    if (label) label.textContent = btn.dataset.done ?? '';
-    if (status) status.textContent = btn.dataset.done ?? '';
-    setTimeout(() => {
-      if (label) label.textContent = original;
-      if (status) status.textContent = '';
-    }, 2200);
-  });
-
-  // A nav link to a collapsed section opens it first.
-  const openFor = (hash: string) => {
-    const el = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;
-    const d = el?.matches('details') ? el : el?.querySelector('details.sect');
-    if (d instanceof HTMLDetailsElement) d.open = true;
-  };
-  document.addEventListener('click', (e) => {
-    const a = (e.target as Element).closest('a[href^="#"]');
-    if (a) openFor(a.getAttribute('href') ?? '');
-  });
-  addEventListener('hashchange', () => openFor(location.hash));
-  openFor(location.hash);
-</script>
+<Shell lang={lang}>
+  <Hero lang={lang} />
+  <StatBar lang={lang} />
+  <AboutPreview lang={lang} />
+  <Experience lang={lang} />
+  <Skills lang={lang} />
+  <Competitive lang={lang} />
+  <ProjectsPreview lang={lang} />
+  <Credentials lang={lang} />
+</Shell>

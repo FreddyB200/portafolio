@@ -1,0 +1,118 @@
+---
+import { Image } from 'astro:assets';
+import Shell from '../components/Shell.astro';
+import PageHead from '../components/PageHead.astro';
+import Story from '../components/Story.astro';
+import Pager from '../components/Pager.astro';
+import FlowDiagram from '../components/FlowDiagram.astro';
+import { copy, pathFor, type Lang } from '../data/content';
+
+// Proof photos live in src/assets/evidence/ and are referenced by file name in content.ts.
+const evidenceImages = import.meta.glob<{ default: ImageMetadata }>('../assets/evidence/*.{jpg,jpeg,png,webp}', { eager: true });
+const imageFor = (file: string) => evidenceImages[`../assets/evidence/${file}`]?.default;
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+const { lang, slug } = Astro.props;
+const c = copy[lang];
+const h = c.pages.hackathons;
+const list = c.competitions.list;
+const i = list.findIndex((p) => p.slug === slug);
+const p = list[i];
+const prev = list[i - 1];
+const next = list[i + 1];
+const item = (x: typeof p) => ({ label: x.name, href: pathFor(lang, 'hackathons', x.slug) });
+const gallery = (p.images ?? []).map((img) => ({ ...img, src: imageFor(img.file) })).filter((img) => img.src);
+const evidenceLinks = [...p.links, ...(p.evidence ?? [])];
+---
+
+<Shell lang={lang} page="hackathons" slug={slug} title={`${p.name}: ${p.subtitle} | Freddy Bautista`} description={p.description}>
+  <PageHead
+    lang={lang}
+    crumbs={[{ label: h.title, href: pathFor(lang, 'hackathons') }, { label: p.name }]}
+    label={`${p.place} · ${p.event}`}
+    title={p.name}
+    lead={p.subtitle}
+  />
+
+  <div class="wrap">
+    <Story label={c.pages.story.setup}>
+      <dl class="grid gap-x-10 gap-y-6 sm:grid-cols-2">
+        <div>
+          <dt class="meta text-ink-soft">{c.competitions.hostLabel}</dt>
+          <dd class="mt-1 text-[clamp(1.05rem,1.1vw,1.25rem)] font-medium leading-snug">{p.event}</dd>
+          {p.context && <dd class="mt-1.5 text-[clamp(0.95rem,1vw,1.1rem)] leading-snug text-ink-soft">{p.context}</dd>}
+        </div>
+        <div>
+          <dt class="meta text-ink-soft">{c.competitions.roleLabel}</dt>
+          <dd class="mt-1 text-[clamp(1.05rem,1.1vw,1.25rem)] font-medium leading-snug">{p.role}</dd>
+        </div>
+      </dl>
+      {(p.story?.setup?.length ?? 0) > 0 && (
+        <div class="prose-lg mt-8 max-w-[48rem] space-y-5 text-ink-soft">{p.story!.setup!.map((t) => <p>{t}</p>)}</div>
+      )}
+    </Story>
+
+    <Story label={c.pages.story.build}>
+      <p class="prose-lg max-w-[48rem] text-ink-soft">{p.description}</p>
+      {(p.story?.build?.length ?? 0) > 0 && (
+        <div class="prose-lg mt-5 max-w-[48rem] space-y-5 text-ink-soft">{p.story!.build!.map((t) => <p>{t}</p>)}</div>
+      )}
+      {p.diagram && (
+        <div class="mt-10">
+          <FlowDiagram {...p.diagram} />
+        </div>
+      )}
+      {gallery.length > 0 && (
+        <div class="mt-10">
+          <h3 class="meta mb-4 text-ink-soft">{h.galleryLabel}</h3>
+          <ul class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-3">
+            {gallery.map((img) => (
+              <li class="border border-rule">
+                <Image src={img.src!} alt={img.alt} widths={[480, 800, 1200]} sizes="(min-width: 768px) 40vw, 90vw" format="webp" loading="lazy" class="h-full w-full object-cover" />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </Story>
+
+    <Story label={c.pages.story.outcome}>
+      <p class="font-display text-[clamp(3rem,7vw,5.5rem)] font-extrabold leading-none tracking-tighter">{p.place}</p>
+      <dl class="mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-y border-ink py-5 sm:grid-cols-3">
+        {p.stats.map((s) => (
+          <div>
+            <dd class="stat-num">{s.value}</dd>
+            <dt class="meta mt-2 text-ink-soft">{s.label}</dt>
+          </div>
+        ))}
+      </dl>
+      {(p.story?.outcome?.length ?? 0) > 0 && (
+        <div class="prose-lg mt-8 max-w-[48rem] space-y-5 text-ink-soft">{p.story!.outcome!.map((t) => <p>{t}</p>)}</div>
+      )}
+      {evidenceLinks.length > 0 && (
+        <div class="mt-8">
+          <h3 class="meta mb-3 text-ink-soft">{h.linksLabel}</h3>
+          <ul class="meta flex flex-wrap gap-x-6 gap-y-2">
+            {evidenceLinks.map((l) => (
+              <li>
+                <a href={l.href} class="link" rel="noopener">{l.label} ↗</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </Story>
+  </div>
+
+  <Pager
+    lang={lang}
+    previous={prev && item(prev)}
+    next={next && item(next)}
+    previousLabel={h.previous}
+    nextLabel={h.next}
+    all={{ label: h.all, href: pathFor(lang, 'hackathons') }}
+  />
+</Shell>

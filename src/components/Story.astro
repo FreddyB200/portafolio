@@ -1,0 +1,16 @@
+---
+// One act of a story page (context / how it was built / result): label on the left, content on the right.
+interface Props {
+  label: string;
+  title?: string;
+}
+const { label, title } = Astro.props;
+---
+
+<section class="reveal grid gap-4 border-t border-ink py-10 md:grid-cols-[var(--col1)_minmax(0,1fr)] md:gap-8 md:py-14" aria-label={label}>
+  <p class="meta sec-label pt-1 text-ink-soft">{label}</p>
+  <div class="min-w-0">
+    {title && <h2 class="mb-6 text-[clamp(1.75rem,3vw,2.75rem)] [text-wrap:balance]">{title}</h2>}
+    <slot />
+  </div>
+</section>

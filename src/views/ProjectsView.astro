@@ -1,0 +1,44 @@
+---
+import Shell from '../components/Shell.astro';
+import PageHead from '../components/PageHead.astro';
+import { copy, pathFor, type Lang } from '../data/content';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = copy[lang].pages.projects;
+---
+
+<Shell lang={lang} page="projects" title={c.metaTitle} description={c.metaDescription}>
+  <PageHead lang={lang} crumbs={[{ label: c.title }]} label={c.label} title={c.title} lead={c.intro} />
+
+  <ol class="focus-list wrap border-t border-ink">
+    {
+      c.list.map((p) => (
+        <li class="row reveal grid gap-3 border-b border-rule py-8 md:grid-cols-[var(--col1)_minmax(0,1fr)_minmax(0,1.7fr)] md:gap-8 md:py-10">
+          <p class="meta text-ink-soft">{p.period}</p>
+          <div>
+            <h2 class="font-display text-[clamp(1.5rem,1.9vw,2.2rem)] font-bold leading-tight tracking-tight">{p.name}</h2>
+            <p class="mt-2 text-[clamp(1.05rem,1.15vw,1.3rem)] font-medium leading-snug">{p.subtitle}</p>
+            <p class="meta mt-2 text-ink-soft">{p.company}</p>
+          </div>
+          <div>
+            <p class="prose-lg max-w-[48rem] text-ink-soft">{p.summary}</p>
+            {p.stack && (
+              <ul class="mt-6 flex flex-wrap gap-2" aria-label={c.stackLabel}>
+                {p.stack.map((t) => <li class="tag">{t}</li>)}
+              </ul>
+            )}
+            {p.story && (
+              <p class="meta mt-6">
+                <a href={pathFor(lang, 'projects', p.slug)} class="link">{c.readStory} <span aria-hidden="true">→</span></a>
+              </p>
+            )}
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="pb-16 md:pb-24"></div>
+</Shell>

@@ -1,0 +1,42 @@
+---
+import type { Lang } from '../data/content';
+import { copy } from '../data/content';
+
+interface Item {
+  label: string;
+  href: string;
+}
+interface Props {
+  lang: Lang;
+  previous?: Item;
+  next?: Item;
+  previousLabel: string;
+  nextLabel: string;
+  all: Item;
+}
+const { previous, next, previousLabel, nextLabel, all } = Astro.props;
+---
+
+<nav class="wrap mt-6 border-t border-ink py-8 md:py-10" aria-label={all.label}>
+  <ul class="grid gap-6 md:grid-cols-3 md:items-start">
+    <li>
+      {previous && (
+        <a href={previous.href} class="group block no-underline">
+          <span class="meta block text-ink-soft"><span aria-hidden="true">← </span>{previousLabel}</span>
+          <span class="mt-1 block font-display text-xl font-bold tracking-tight group-hover:text-accent-ink group-hover:underline">{previous.label}</span>
+        </a>
+      )}
+    </li>
+    <li class="md:text-center">
+      <a href={all.href} class="btn btn-accent">{all.label}</a>
+    </li>
+    <li class="md:text-right">
+      {next && (
+        <a href={next.href} class="group block no-underline">
+          <span class="meta block text-ink-soft">{nextLabel}<span aria-hidden="true"> →</span></span>
+          <span class="mt-1 block font-display text-xl font-bold tracking-tight group-hover:text-accent-ink group-hover:underline">{next.label}</span>
+        </a>
+      )}
+    </li>
+  </ul>
+</nav>

@@ -1,6 +1,7 @@
 ---
 import { copy, links, emailToken, type Lang } from '../data/content';
 import Icon from './Icon.astro';
+import ContactForm from './ContactForm.astro';
 
 interface Props {
   lang: Lang;
@@ -13,34 +14,41 @@ const c = copy[lang];
   <div class="wrap py-16 md:py-28">
     <h2 class="max-w-[20ch] text-[clamp(2.5rem,7vw,7rem)] [text-wrap:balance]">{c.footer.headline}</h2>
 
-    <div class="mt-12 md:mt-16">
-      <button type="button" class="mail-xl" data-mail="open" data-t={emailToken}>{c.ui.emailMe}<span aria-hidden="true"> →</span></button>
-    </div>
+    <div class="mt-12 grid gap-12 md:mt-16 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-20">
+      <ContactForm lang={lang} />
 
-    <div class="mt-8 flex flex-wrap items-center gap-3">
-      <button
-        type="button"
-        class="meta inline-flex cursor-pointer items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white hover:bg-white hover:text-accent"
-        data-mail="copy"
-        data-t={emailToken}
-        data-done={c.ui.copied}
-        aria-label={c.ui.copyEmailLabel}
-      >
-        <Icon name="copy" size={16} />
-        <span data-mail-label>{c.ui.copy}</span>
-      </button>
-      <a href={links.linkedin} rel="noopener" class="meta inline-flex items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white no-underline hover:bg-white hover:text-accent">
-        <Icon name="linkedin" size={16} />
-        LinkedIn
-      </a>
-      <a href={links.github} rel="noopener" class="meta inline-flex items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white no-underline hover:bg-white hover:text-accent">
-        <Icon name="github" size={16} />
-        GitHub
-      </a>
-      <a href={links.resume} class="meta inline-flex items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white no-underline hover:bg-white hover:text-accent">
-        <Icon name="download" size={16} />
-        {c.ui.resume}
-      </a>
+      <div>
+        <h3 class="meta border-b border-white/60 pb-3">{c.contact.otherWays}</h3>
+        <div class="mt-6">
+          <button type="button" class="mail-xl" data-mail="open" data-t={emailToken}>{c.ui.emailMe}<span aria-hidden="true"> →</span></button>
+        </div>
+
+        <div class="mt-8 flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            class="meta inline-flex cursor-pointer items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white hover:bg-white hover:text-accent"
+            data-mail="copy"
+            data-t={emailToken}
+            data-done={c.ui.copied}
+            aria-label={c.ui.copyEmailLabel}
+          >
+            <Icon name="copy" size={16} />
+            <span data-mail-label>{c.ui.copy}</span>
+          </button>
+          <a href={links.linkedin} rel="noopener" class="meta inline-flex items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white no-underline hover:bg-white hover:text-accent">
+            <Icon name="linkedin" size={16} />
+            LinkedIn
+          </a>
+          <a href={links.github} rel="noopener" class="meta inline-flex items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white no-underline hover:bg-white hover:text-accent">
+            <Icon name="github" size={16} />
+            GitHub
+          </a>
+          <a href={links.resume} class="meta inline-flex items-center gap-2.5 border-[1.5px] border-white px-5 py-3.5 text-white no-underline hover:bg-white hover:text-accent">
+            <Icon name="download" size={16} />
+            {c.ui.resume}
+          </a>
+        </div>
+      </div>
     </div>
 
     <noscript><p class="meta mt-6 text-white">{c.ui.noJs}</p></noscript>

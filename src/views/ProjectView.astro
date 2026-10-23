@@ -1,0 +1,115 @@
+---
+import { Image } from 'astro:assets';
+import Shell from '../components/Shell.astro';
+import PageHead from '../components/PageHead.astro';
+import Story from '../components/Story.astro';
+import Pager from '../components/Pager.astro';
+import FlowDiagram from '../components/FlowDiagram.astro';
+import { copy, pathFor, type Lang } from '../data/content';
+
+const evidenceImages = import.meta.glob<{ default: ImageMetadata }>('../assets/evidence/*.{jpg,jpeg,png,webp}', { eager: true });
+const imageFor = (file: string) => evidenceImages[`../assets/evidence/${file}`]?.default;
+
+interface Props {
+  lang: Lang;
+  slug: string;
+}
+const { lang, slug } = Astro.props;
+const c = copy[lang].pages.projects;
+const list = c.list.filter((x) => x.story); // only projects with a story get a detail page
+const i = list.findIndex((x) => x.slug === slug);
+const p = list[i];
+const prev = list[i - 1];
+const next = list[i + 1];
+const item = (x: typeof p) => ({ label: x.name, href: pathFor(lang, 'projects', x.slug) });
+const gallery = (p.images ?? []).map((img) => ({ ...img, src: imageFor(img.file) })).filter((img) => img.src);
+const links = [...p.links, ...(p.evidence ?? [])];
+const story = p.story!;
+const has = (a?: string[]) => (a?.length ?? 0) > 0;
+const ui = copy[lang].pages.story;
+---
+
+<Shell lang={lang} page="projects" slug={slug} title={`${p.name} | Freddy Bautista`} description={p.summary}>
+  <PageHead
+    lang={lang}
+    crumbs={[{ label: c.title, href: pathFor(lang, 'projects') }, { label: p.name }]}
+    label={p.period}
+    title={p.name}
+    lead={p.summary}
+  />
+
+  <div class="wrap">
+    <Story label={ui.setup}>
+      <dl class="grid gap-x-10 gap-y-6 sm:grid-cols-2">
+        <div>
+          <dt class="meta text-ink-soft">{c.companyLabel}</dt>
+          <dd class="mt-1 text-[clamp(1.05rem,1.1vw,1.25rem)] font-medium leading-snug">{p.company}</dd>
+        </div>
+        <div>
+          <dt class="meta text-ink-soft">{c.roleLabel}</dt>
+          <dd class="mt-1 text-[clamp(1.05rem,1.1vw,1.25rem)] font-medium leading-snug">{p.role}</dd>
+        </div>
+      </dl>
+      {has(story.setup) && <div class="prose-lg mt-8 max-w-[48rem] space-y-5 text-ink-soft">{story.setup!.map((t) => <p>{t}</p>)}</div>}
+    </Story>
+
+    {
+      (has(story.build) || p.stack || p.diagram || gallery.length > 0) && (
+        <Story label={ui.build}>
+          {has(story.build) && <div class="prose-lg max-w-[48rem] space-y-5 text-ink-soft">{story.build!.map((t) => <p>{t}</p>)}</div>}
+          {p.stack && (
+            <ul class="mt-8 flex flex-wrap gap-2" aria-label={c.stackLabel}>
+              {p.stack.map((t) => <li class="tag">{t}</li>)}
+            </ul>
+          )}
+          {p.diagram && (
+            <div class="mt-10">
+              <FlowDiagram {...p.diagram} />
+            </div>
+          )}
+          {gallery.length > 0 && (
+            <div class="mt-10">
+              <h3 class="meta mb-4 text-ink-soft">{c.galleryLabel}</h3>
+              <ul class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,18rem),1fr))] gap-3">
+                {gallery.map((img) => (
+                  <li class="border border-rule">
+                    <Image src={img.src!} alt={img.alt} widths={[480, 800, 1200]} sizes="(min-width: 768px) 40vw, 90vw" format="webp" loading="lazy" class="h-full w-full object-cover" />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Story>
+      )
+    }
+
+    {
+      (has(story.outcome) || links.length > 0) && (
+        <Story label={ui.outcome}>
+          {has(story.outcome) && <div class="prose-lg max-w-[48rem] space-y-5 text-ink-soft">{story.outcome!.map((t) => <p>{t}</p>)}</div>}
+          {links.length > 0 && (
+            <div class="mt-8">
+              <h3 class="meta mb-3 text-ink-soft">{c.linksLabel}</h3>
+              <ul class="meta flex flex-wrap gap-x-6 gap-y-2">
+                {links.map((l) => (
+                  <li>
+                    <a href={l.href} class="link" rel="noopener">{l.label} ↗</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </Story>
+      )
+    }
+  </div>
+
+  <Pager
+    lang={lang}
+    previous={prev && item(prev)}
+    next={next && item(next)}
+    previousLabel={c.previous}
+    nextLabel={c.next}
+    all={{ label: c.all, href: pathFor(lang, 'projects') }}
+  />
+</Shell>
