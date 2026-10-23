@@ -30,6 +30,43 @@ const { lang } = Astro.props;
 </Base>
 
 <script>
+  // Email protection: the address is decoded only on a real click, never present in the HTML.
+  const decode = (t: string) => atob(t).split('').reverse().join('');
+  const copyText = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+  };
+  document.addEventListener('click', async (e) => {
+    const btn = (e.target as Element).closest<HTMLElement>('[data-mail]');
+    if (!btn?.dataset.t) return;
+    const addr = decode(btn.dataset.t);
+    if (btn.dataset.mail === 'open') {
+      location.href = `mailto:${addr}`;
+      return;
+    }
+    await copyText(addr);
+    const label = btn.querySelector<HTMLElement>('[data-mail-label]');
+    const status = document.querySelector<HTMLElement>('[data-mail-status]');
+    const original = label?.textContent ?? '';
+    if (label) label.textContent = btn.dataset.done ?? '';
+    if (status) status.textContent = btn.dataset.done ?? '';
+    setTimeout(() => {
+      if (label) label.textContent = original;
+      if (status) status.textContent = '';
+    }, 2200);
+  });
+
   // A nav link to a collapsed section opens it first.
   const openFor = (hash: string) => {
     const el = hash.length > 1 ? document.getElementById(decodeURIComponent(hash.slice(1))) : null;

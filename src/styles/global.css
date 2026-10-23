@@ -275,6 +275,10 @@
     overflow-wrap: anywhere;
     transition: background-size 0.25s ease;
   }
+  button.mail-xl {
+    cursor: pointer;
+    text-align: left;
+  }
   .mail-xl:hover {
     background-size: 0% 3px;
   }

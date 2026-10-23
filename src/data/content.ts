@@ -10,11 +10,16 @@ export const site = {
 };
 
 export const links = {
-  email: 'freddybautistadev@gmail.com',
   github: 'https://github.com/FreddyB200',
   linkedin: 'https://www.linkedin.com/in/freddy-bautista-baquero',
   resume: '/freddy-bautista-cv.pdf',
 };
+
+/**
+ * The email address never appears in the HTML. It is stored reversed + base64 and only decoded
+ * in the browser when a visitor clicks "Email me" or "Copy" (keeps scrapers from harvesting it).
+ */
+export const emailToken = Buffer.from('freddybautistadev@gmail.com'.split('').reverse().join('')).toString('base64');
 
 /** Start of professional experience (first job). Used to compute the exact time worked. */
 export const careerStart = '2024-02';
@@ -88,6 +93,11 @@ export interface Copy {
     backToTop: string;
     hide: string;
     show: string;
+    emailMe: string;
+    copy: string;
+    copied: string;
+    copyEmailLabel: string;
+    noJs: string;
   };
   nav: { label: string; href: string }[];
   hero: { eyebrow: string; headline: string[]; paragraphs: string[]; photoAlt: string };
@@ -136,6 +146,11 @@ const en: Copy = {
     backToTop: 'Back to top',
     hide: 'Hide',
     show: 'Show',
+    emailMe: 'Email me',
+    copy: 'Copy email',
+    copied: 'Copied',
+    copyEmailLabel: 'Copy email address to clipboard',
+    noJs: 'The email address needs JavaScript. Reach me on LinkedIn instead.',
   },
   nav: [
     { label: 'Experience', href: '#experience' },
@@ -351,6 +366,11 @@ const es: Copy = {
     backToTop: 'Volver arriba',
     hide: 'Ocultar',
     show: 'Mostrar',
+    emailMe: 'Escríbeme',
+    copy: 'Copiar correo',
+    copied: 'Copiado',
+    copyEmailLabel: 'Copiar el correo al portapapeles',
+    noJs: 'El correo necesita JavaScript. Escríbeme por LinkedIn.',
   },
   nav: [
     { label: 'Experiencia', href: '#experience' },

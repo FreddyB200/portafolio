@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { copy, links, type Lang } from '../data/content';
+import { copy, links, emailToken, type Lang } from '../data/content';
 import Icon from './Icon.astro';
 import photo from '../assets/freddy.jpg';
 
@@ -57,10 +57,23 @@ const padX = 'px-[var(--gutter)] lg:pr-[clamp(1.5rem,2.6vw,3.5rem)]';
       padX,
     ]}
   >
-    <a href={`mailto:${links.email}`} class="btn btn-solid btn-lg">
-      <Icon name="mail" />
-      {links.email}
-    </a>
+    <span class="inline-flex">
+      <button type="button" class="btn btn-solid btn-lg" data-mail="open" data-t={emailToken}>
+        <Icon name="mail" />
+        {c.ui.emailMe}
+      </button>
+      <button
+        type="button"
+        class="btn btn-accent btn-lg -ml-[1.5px]"
+        data-mail="copy"
+        data-t={emailToken}
+        data-done={c.ui.copied}
+        aria-label={c.ui.copyEmailLabel}
+      >
+        <Icon name="copy" />
+        <span data-mail-label>{c.ui.copy}</span>
+      </button>
+    </span>
     <a href={links.github} class="btn btn-accent btn-lg" rel="noopener">
       <Icon name="github" />
       GitHub
