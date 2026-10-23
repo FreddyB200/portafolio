@@ -289,7 +289,7 @@ const en: Copy = {
         event: 'Platanus Hack 26 · Bogotá · AI Security track',
         role: 'Backend Developer',
         stats: [
-          { value: '100', label: 'teams selected' },
+          { value: '100', label: 'participants selected' },
           { value: '300+', label: 'applicants' },
         ],
         description:
@@ -530,7 +530,7 @@ const es: Copy = {
         event: 'Platanus Hack 26 · Bogotá · Track AI Security',
         role: 'Desarrollador Backend',
         stats: [
-          { value: '100', label: 'equipos seleccionados' },
+          { value: '100', label: 'participantes seleccionados' },
           { value: '300+', label: 'postulantes' },
         ],
         description:
