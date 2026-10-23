@@ -2,6 +2,7 @@
 import { copy, type Lang } from '../data/content';
 import { Image } from 'astro:assets';
 import SectionHead from './SectionHead.astro';
+import FlowDiagram from './FlowDiagram.astro';
 
 // Proof photos live in src/assets/evidence/ and are referenced by file name in content.ts.
 const evidenceImages = import.meta.glob<{ default: ImageMetadata }>('../assets/evidence/*.{jpg,jpeg,png,webp}', { eager: true });
@@ -56,17 +57,23 @@ const c = copy[lang].competitions;
                 ))}
               </ul>
             )}
-            {((p.evidence?.length ?? 0) > 0 || (p.images?.length ?? 0) > 0) && (
-              <details class="sect mt-7 border-t border-rule">
+          </div>
+          {((p.evidence?.length ?? 0) > 0 || (p.images?.length ?? 0) > 0 || p.diagram) && (
+              <details class="sect border-t border-rule md:col-span-2 md:col-start-2">
                 <summary class="meta flex items-center justify-between gap-4 py-4 text-ink">
                   <span>
-                    {c.evidenceLabel} ({(p.evidence?.length ?? 0) + (p.images?.length ?? 0)})
+                    {c.evidenceLabel} ({(p.evidence?.length ?? 0) + (p.images?.length ?? 0) + (p.diagram ? 1 : 0)})
                   </span>
                   <span class="sect-toggle !mt-0" aria-hidden="true">
                     <i />
                   </span>
                 </summary>
-                <div class="grid gap-6 pb-2 pt-2 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+                {p.diagram && (
+                  <div class="pb-6 pt-2">
+                    <FlowDiagram {...p.diagram} />
+                  </div>
+                )}
+                <div class:list={['grid gap-6 pb-2 pt-2 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]', !((p.evidence?.length ?? 0) + (p.images?.length ?? 0)) && 'hidden']}>
                   {(p.images?.length ?? 0) > 0 && (
                     <ul class="grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-3">
                       {p.images!.map((img) => {
@@ -95,7 +102,6 @@ const c = copy[lang].competitions;
                 </div>
               </details>
             )}
-          </div>
         </li>
       ))
     }

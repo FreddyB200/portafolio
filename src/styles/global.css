@@ -331,7 +331,7 @@
     width: 1.5px;
     height: 0.7rem;
   }
-  .sect[open] .sect-toggle i::after {
+  .sect[open] > summary .sect-toggle i::after {
     display: none;
   }
   .sect-sum:hover .sect-toggle {
@@ -340,10 +340,10 @@
   .when-closed {
     display: none;
   }
-  .sect:not([open]) .when-open {
+  .sect:not([open]) > summary .when-open {
     display: none;
   }
-  .sect:not([open]) .when-closed {
+  .sect:not([open]) > summary .when-closed {
     display: inline;
   }
   .skill {

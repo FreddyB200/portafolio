@@ -71,6 +71,8 @@ export interface Podium {
   stats: { value: string; label: string }[];
   description: string;
   links: { label: string; href: string }[];
+  /** Optional architecture flow, drawn in HTML so it reads well on phones. */
+  diagram?: { label: string; steps: { title: string; detail: string }[]; footnote?: string };
   /** Optional proof, shown in a closed "Evidence" disclosure (organizer page, video, post, photos). */
   evidence?: { label: string; href: string }[];
   /** File names inside src/assets/evidence/ */
@@ -268,6 +270,16 @@ const en: Copy = {
             href: 'https://github.com/Olinky-HackDay-Indra-Hackaton/ecosentinel-uptc',
           },
         ],
+        diagram: {
+          label: 'How a WhatsApp question becomes a forecast',
+          steps: [
+            { title: 'WhatsApp', detail: 'Text or voice note from a campus manager' },
+            { title: 'Evolution API + n8n', detail: 'Whisper transcribes audio, GPT-4o-mini detects intent' },
+            { title: 'FastAPI', detail: '20 Prophet models (4 campuses × 5 sectors), Z-score anomaly detector, Gemini recommendations' },
+            { title: 'Supabase PostgreSQL', detail: 'Consumption data and model outputs' },
+          ],
+          footnote: 'A Streamlit + Plotly dashboard queries the same FastAPI directly. Deployed with Docker Compose.',
+        },
       },
       {
         name: 'Roxy',
@@ -286,6 +298,16 @@ const en: Copy = {
           { label: 'PyPI SDK', href: 'https://pypi.org/project/roxy-guard/' },
           { label: 'Landing', href: 'https://landing.roxygt.lat' },
         ],
+        diagram: {
+          label: 'What happens to every agent call',
+          steps: [
+            { title: 'AI agent', detail: 'Calls an MCP server, never holding its credentials' },
+            { title: 'Gateway (Go)', detail: 'Intercepts the call and asks the verifier before anything runs' },
+            { title: 'Verifier (Rust + Z3)', detail: 'Deterministic verdict on a policy frozen from natural-language rules; Z3 audits the policy for loopholes' },
+            { title: 'MCP server', detail: 'Credentials are injected only if approved; otherwise the caller gets a 403' },
+          ],
+          footnote: 'Every verdict is logged to a live dashboard and anchored on Solana devnet. Infrastructure in Terraform behind CloudFront.',
+        },
       },
       {
         name: 'Adkio',
@@ -488,6 +510,16 @@ const es: Copy = {
             href: 'https://github.com/Olinky-HackDay-Indra-Hackaton/ecosentinel-uptc',
           },
         ],
+        diagram: {
+          label: 'Cómo una pregunta por WhatsApp se convierte en un pronóstico',
+          steps: [
+            { title: 'WhatsApp', detail: 'Texto o nota de voz de un responsable de sede' },
+            { title: 'Evolution API + n8n', detail: 'Whisper transcribe el audio, GPT-4o-mini detecta la intención' },
+            { title: 'FastAPI', detail: '20 modelos Prophet (4 sedes × 5 sectores), detector de anomalías por Z-score, recomendaciones con Gemini' },
+            { title: 'Supabase PostgreSQL', detail: 'Datos de consumo y resultados de los modelos' },
+          ],
+          footnote: 'Un dashboard en Streamlit + Plotly consulta el mismo FastAPI directamente. Desplegado con Docker Compose.',
+        },
       },
       {
         name: 'Roxy',
@@ -506,6 +538,16 @@ const es: Copy = {
           { label: 'SDK en PyPI', href: 'https://pypi.org/project/roxy-guard/' },
           { label: 'Landing', href: 'https://landing.roxygt.lat' },
         ],
+        diagram: {
+          label: 'Qué pasa con cada llamada de un agente',
+          steps: [
+            { title: 'Agente de IA', detail: 'Llama a un servidor MCP sin tener nunca sus credenciales' },
+            { title: 'Gateway (Go)', detail: 'Intercepta la llamada y consulta al verificador antes de ejecutar nada' },
+            { title: 'Verificador (Rust + Z3)', detail: 'Veredicto determinista sobre una política congelada a partir de reglas en lenguaje natural; Z3 audita la política en busca de huecos' },
+            { title: 'Servidor MCP', detail: 'Las credenciales se inyectan solo si se aprueba; si no, quien llama recibe un 403' },
+          ],
+          footnote: 'Cada veredicto queda en un dashboard en vivo y anclado en Solana devnet. Infraestructura en Terraform detrás de CloudFront.',
+        },
       },
       {
         name: 'Adkio',
