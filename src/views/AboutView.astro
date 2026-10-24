@@ -18,8 +18,8 @@ const podiums = c.competitions.list;
 // The three acts reuse content that already lives in Experience and Credentials.
 // Jobs are listed newest first in content.ts, so index 2 is the first job.
 const acts = [
-  { jobs: [jobs[2]], edu: [edu[0]], podiums: false },
-  { jobs: [jobs[1]], edu: [edu[1]], podiums: true },
+  { jobs: [jobs[2]], edu: [edu[0], edu[1]], podiums: false },
+  { jobs: [jobs[1]], edu: [edu[2]], podiums: true },
   { jobs: [jobs[0]], edu: [], podiums: false },
 ];
 ---

@@ -1,5 +1,5 @@
 ---
-import { copy, careerStart, monthsSince, formatDuration, durationUnits, type Lang } from '../data/content';
+import { copy, formalMonths, formalSpells, formatDuration, durationUnits, type Lang } from '../data/content';
 
 interface Props {
   lang: Lang;
@@ -7,7 +7,7 @@ interface Props {
 const { lang } = Astro.props;
 const c = copy[lang].experience;
 const ui = copy[lang].ui;
-const duration = formatDuration(monthsSince(careerStart), lang);
+const duration = formatDuration(formalMonths(), lang);
 ---
 
 <section id="experience" aria-labelledby="experience-title" class="wrap py-16 md:py-24">
@@ -20,7 +20,7 @@ const duration = formatDuration(monthsSince(careerStart), lang);
         <span class="block font-display text-[clamp(1.25rem,1.8vw,1.75rem)] font-extrabold leading-none tracking-tight">{c.range}</span>
         <span class="meta mt-2 block text-ink-soft">
           <span
-            data-exp-start={careerStart}
+            data-exp-spells={JSON.stringify(formalSpells)}
             data-exp-units={JSON.stringify(durationUnits[lang])}
             class="font-semibold text-ink">{duration}</span
           >
@@ -62,14 +62,20 @@ const duration = formatDuration(monthsSince(careerStart), lang);
 </section>
 
 <script>
-  // Keep the "time worked" exact even if the site is not redeployed this month.
-  const el = document.querySelector<HTMLElement>('[data-exp-start]');
+  // Keep the "formal experience" figure exact even if the site is not redeployed this month.
+  // Same rule as formalMonths() in content.ts: sum of the employment spells, gaps not counted.
+  const el = document.querySelector<HTMLElement>('[data-exp-spells]');
   if (el) {
     try {
       const u = JSON.parse(el.dataset.expUnits ?? '{}');
-      const [sy, sm] = (el.dataset.expStart ?? '').split('-').map(Number);
+      const spells = JSON.parse(el.dataset.expSpells ?? '[]') as { start: string; end: string | null }[];
+      const idx = (ym: string) => {
+        const [y, m] = ym.split('-').map(Number);
+        return y * 12 + m;
+      };
       const now = new Date();
-      const total = Math.max(0, (now.getFullYear() - sy) * 12 + (now.getMonth() + 1 - sm));
+      const nowIdx = now.getFullYear() * 12 + now.getMonth() + 1;
+      const total = spells.reduce((t, s) => t + Math.max(0, (s.end ? idx(s.end) : nowIdx) - idx(s.start)), 0);
       const y = Math.floor(total / 12);
       const m = total % 12;
       const parts: string[] = [];

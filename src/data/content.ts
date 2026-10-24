@@ -46,6 +46,25 @@ export function formatDuration(months: number, lang: Lang): string {
 
 export const durationUnits = units;
 
+/**
+ * Formal employment spells (YYYY-MM). `end: null` means current job. Gaps between jobs are not
+ * counted, so this is formal experience only (the "3 years" in the stats bar also counts independent work).
+ */
+export const formalSpells: { start: string; end: string | null }[] = [
+  { start: '2024-02', end: '2025-08' }, // Serviportenal
+  { start: '2025-08', end: '2026-02' }, // ESCOLE
+  { start: '2026-06', end: null }, // BBVA via Inetum
+];
+
+export function formalMonths(now: Date = new Date()): number {
+  const idx = (ym: string) => {
+    const [y, m] = ym.split('-').map(Number);
+    return y * 12 + m;
+  };
+  const nowIdx = now.getFullYear() * 12 + now.getMonth() + 1;
+  return formalSpells.reduce((t, s) => t + Math.max(0, (s.end ? idx(s.end) : nowIdx) - idx(s.start)), 0);
+}
+
 export interface Job {
   dates: string;
   company: string;
@@ -344,7 +363,7 @@ const en: Copy = {
           name: 'Equipment management platform',
           subtitle: 'Internal platform',
           company: 'ESCOLE Experiencias Educativas',
-          period: 'Feb 2025 – Feb 2026',
+          period: 'Aug 2025 – Feb 2026',
           role: 'Fullstack Developer',
           summary: 'An equipment management platform that more than five departments adopted, shipped with tests and documentation.',
           story: {
@@ -359,7 +378,7 @@ const en: Copy = {
           name: '24/7 camera streaming service',
           subtitle: 'Live video for 16 cameras',
           company: 'ESCOLE Experiencias Educativas',
-          period: 'Feb 2025 – Feb 2026',
+          period: 'Aug 2025 – Feb 2026',
           role: 'Fullstack Developer',
           summary: 'A streaming service in FastAPI that runs around the clock for 16 cameras.',
           stack: ['FastAPI'],
@@ -374,7 +393,7 @@ const en: Copy = {
           name: 'Multi-module ERP',
           subtitle: 'Billing, contracts and clients',
           company: 'Serviportenal SAS',
-          period: 'Feb 2024 – Feb 2025',
+          period: 'Feb 2024 – Aug 2025',
           role: 'Java Developer',
           summary: 'A multi-module ERP in Java 17 and Spring Boot covering billing, contracts and clients.',
           stack: ['Java 17', 'Spring Boot', 'PostgreSQL', 'OpenAPI'],
@@ -419,7 +438,7 @@ const en: Copy = {
   },
   stats: [
     { label: 'Currently', value: 'BBVA', note: 'Real-time payments project, via Inetum' },
-    { label: 'Years building', value: '4 years', note: 'Professional + independent work' },
+    { label: 'Years building', value: '3 years', note: 'Professional + independent work' },
     { label: 'Core stack', value: 'Java · Python · AWS' },
     { label: 'Based in', value: 'Bogotá, Colombia' },
   ],
@@ -427,7 +446,7 @@ const en: Copy = {
     label: '01 / Career',
     title: 'Experience',
     range: '2024 – Present',
-    durationSuffix: 'of professional experience',
+    durationSuffix: 'of formal professional experience',
     technologies: 'Technologies',
     jobs: [
       {
@@ -441,7 +460,7 @@ const en: Copy = {
         tags: ['Java', 'Event-driven architecture', 'Distributed systems', 'Oracle', 'JUnit', 'SonarQube', 'Scrum'],
       },
       {
-        dates: 'Feb 2025 – Feb 2026',
+        dates: 'Aug 2025 – Feb 2026',
         company: 'ESCOLE Experiencias Educativas',
         role: 'Fullstack Developer',
         place: 'Bogotá · On-site',
@@ -451,7 +470,7 @@ const en: Copy = {
         tags: ['React', 'Google Apps Script', 'FastAPI', 'Docker', 'Linux', 'PostgreSQL'],
       },
       {
-        dates: 'Feb 2024 – Feb 2025',
+        dates: 'Feb 2024 – Aug 2025',
         company: 'Serviportenal SAS',
         role: 'Java Developer',
         place: 'Bogotá · Remote',
@@ -586,6 +605,11 @@ const en: Copy = {
     languagesHeading: 'Languages',
     credentialsHeading: 'Credentials & distinctions',
     education: [
+      {
+        title: 'Systems Engineering, undergraduate',
+        place: 'Universidad Nacional de Colombia',
+        dates: '2024-1 – Present',
+      },
       {
         title: 'Systems Engineering, undergraduate',
         place: 'Fundación Universitaria Compensar · Bogotá',
@@ -733,7 +757,7 @@ const es: Copy = {
           name: 'Plataforma de gestión de equipos',
           subtitle: 'Plataforma interna',
           company: 'ESCOLE Experiencias Educativas',
-          period: 'Feb 2025 – Feb 2026',
+          period: 'Ago 2025 – Feb 2026',
           role: 'Desarrollador Fullstack',
           summary: 'Una plataforma de gestión de equipos que más de cinco departamentos adoptaron, entregada con pruebas y documentación.',
           story: {
@@ -748,7 +772,7 @@ const es: Copy = {
           name: 'Servicio de streaming de cámaras 24/7',
           subtitle: 'Video en vivo para 16 cámaras',
           company: 'ESCOLE Experiencias Educativas',
-          period: 'Feb 2025 – Feb 2026',
+          period: 'Ago 2025 – Feb 2026',
           role: 'Desarrollador Fullstack',
           summary: 'Un servicio de streaming en FastAPI que funciona las 24 horas para 16 cámaras.',
           stack: ['FastAPI'],
@@ -763,7 +787,7 @@ const es: Copy = {
           name: 'ERP multimódulo',
           subtitle: 'Facturación, contratos y clientes',
           company: 'Serviportenal SAS',
-          period: 'Feb 2024 – Feb 2025',
+          period: 'Feb 2024 – Ago 2025',
           role: 'Desarrollador Java',
           summary: 'Un ERP multimódulo en Java 17 y Spring Boot para facturación, contratos y clientes.',
           stack: ['Java 17', 'Spring Boot', 'PostgreSQL', 'OpenAPI'],
@@ -808,7 +832,7 @@ const es: Copy = {
   },
   stats: [
     { label: 'Actualmente', value: 'BBVA', note: 'Proyecto de pagos en tiempo real, vía Inetum' },
-    { label: 'Años construyendo', value: '4 años', note: 'Trabajo profesional + independiente' },
+    { label: 'Años construyendo', value: '3 años', note: 'Trabajo profesional + independiente' },
     { label: 'Stack principal', value: 'Java · Python · AWS' },
     { label: 'Ubicación', value: 'Bogotá, Colombia' },
   ],
@@ -816,7 +840,7 @@ const es: Copy = {
     label: '01 / Carrera',
     title: 'Experiencia',
     range: '2024 – Actualidad',
-    durationSuffix: 'de experiencia profesional',
+    durationSuffix: 'de experiencia profesional formal',
     technologies: 'Tecnologías',
     jobs: [
       {
@@ -830,7 +854,7 @@ const es: Copy = {
         tags: ['Java', 'Event-driven architecture', 'Distributed systems', 'Oracle', 'JUnit', 'SonarQube', 'Scrum'],
       },
       {
-        dates: 'Feb 2025 – Feb 2026',
+        dates: 'Ago 2025 – Feb 2026',
         company: 'ESCOLE Experiencias Educativas',
         role: 'Desarrollador Fullstack',
         place: 'Bogotá · Presencial',
@@ -840,7 +864,7 @@ const es: Copy = {
         tags: ['React', 'Google Apps Script', 'FastAPI', 'Docker', 'Linux', 'PostgreSQL'],
       },
       {
-        dates: 'Feb 2024 – Feb 2025',
+        dates: 'Feb 2024 – Ago 2025',
         company: 'Serviportenal SAS',
         role: 'Desarrollador Java',
         place: 'Bogotá · Remoto',
@@ -975,6 +999,11 @@ const es: Copy = {
     languagesHeading: 'Idiomas',
     credentialsHeading: 'Credenciales y distinciones',
     education: [
+      {
+        title: 'Ingeniería de Sistemas, pregrado',
+        place: 'Universidad Nacional de Colombia',
+        dates: '2024-1 – Actualidad',
+      },
       {
         title: 'Ingeniería de Sistemas, pregrado',
         place: 'Fundación Universitaria Compensar · Bogotá',
