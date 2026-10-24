@@ -159,7 +159,6 @@ export interface Copy {
     breadcrumb: string;
   };
   nav: NavItem[];
-  aboutPreview: { label: string; text: string; cta: string };
   about: {
     metaTitle: string;
     metaDescription: string;
@@ -281,18 +280,13 @@ const en: Copy = {
     breadcrumb: 'You are here',
   },
   nav: [
-    { label: 'About', page: 'about' },
     { label: 'Experience', page: 'home', hash: 'experience' },
     { label: 'Skills', page: 'home', hash: 'skills' },
     { label: 'Hackathons', page: 'hackathons' },
     { label: 'Projects', page: 'projects' },
     { label: 'Contact', page: 'home', hash: 'contact' },
+    { label: 'About', page: 'about' },
   ],
-  aboutPreview: {
-    label: 'About',
-    text: 'From a multi-module Java ERP in 2024 to real-time payments at BBVA, with three Top 2 finishes along the way. The longer story, with recognitions and credentials.',
-    cta: 'More about me',
-  },
   about: {
     metaTitle: 'About | Freddy Bautista',
     metaDescription:
@@ -611,9 +605,9 @@ const en: Copy = {
         dates: '2024-1 – Present',
       },
       {
-        title: 'Systems Engineering, undergraduate',
+        title: 'Professional Technician in Database Administration and Maintenance',
         place: 'Fundación Universitaria Compensar · Bogotá',
-        dates: '2024 – Present',
+        dates: '2024',
       },
       { title: 'Software Analysis & Development Technology', place: 'SENA', dates: '2025 – 2027' },
     ],
@@ -675,18 +669,13 @@ const es: Copy = {
     breadcrumb: 'Estás aquí',
   },
   nav: [
-    { label: 'Sobre mí', page: 'about' },
     { label: 'Experiencia', page: 'home', hash: 'experience' },
     { label: 'Habilidades', page: 'home', hash: 'skills' },
     { label: 'Hackatones', page: 'hackathons' },
     { label: 'Proyectos', page: 'projects' },
     { label: 'Contacto', page: 'home', hash: 'contact' },
+    { label: 'Sobre mí', page: 'about' },
   ],
-  aboutPreview: {
-    label: 'Sobre mí',
-    text: 'De un ERP multimódulo en Java en 2024 a pagos en tiempo real en BBVA, con tres podios Top 2 en el camino. La historia completa, con reconocimientos y credenciales.',
-    cta: 'Conoce más sobre mí',
-  },
   about: {
     metaTitle: 'Sobre mí | Freddy Bautista',
     metaDescription:
@@ -1005,9 +994,9 @@ const es: Copy = {
         dates: '2024-1 – Actualidad',
       },
       {
-        title: 'Ingeniería de Sistemas, pregrado',
+        title: 'Técnico Profesional en Administración y Mantenimiento de Bases de Datos',
         place: 'Fundación Universitaria Compensar · Bogotá',
-        dates: '2024 – Actualidad',
+        dates: '2024',
       },
       { title: 'Tecnología en Análisis y Desarrollo de Software', place: 'SENA', dates: '2025 – 2027' },
     ],
