@@ -10,14 +10,17 @@
 const MIN_FILL_MS = 2500; // humans need a couple of seconds to write; bots post instantly
 const MAX_AGE_MS = 24 * 60 * 60 * 1000;
 const RATE_LIMIT = 5; // messages per IP per window (best effort: memory is per instance)
+const GLOBAL_LIMIT = 30; // messages per window across all visitors (flood guard, same caveat)
 const RATE_WINDOW_MS = 60 * 60 * 1000;
+const MAX_BODY_BYTES = 20_000; // the form allows ~5 KB of text; anything bigger is not from the form
 
 const hits = new Map<string, number[]>();
+let globalHits: number[] = [];
 
-const json = (status: number, body: Record<string, unknown>) =>
+const json = (status: number, body: Record<string, unknown>, extra: Record<string, string> = {}) =>
   new Response(JSON.stringify(body), {
     status,
-    headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
+    headers: { 'content-type': 'application/json', 'cache-control': 'no-store', ...extra },
   });
 
 function originAllowed(request: Request): boolean {
@@ -25,12 +28,11 @@ function originAllowed(request: Request): boolean {
   if (!origin) return false;
   try {
     const { hostname } = new URL(origin);
-    return (
-      hostname === 'freddybautista.me' ||
-      hostname === 'www.freddybautista.me' ||
-      hostname.endsWith('.vercel.app') || // preview deployments
-      hostname === 'localhost'
-    );
+    if (hostname === 'freddybautista.me' || hostname === 'www.freddybautista.me') return true;
+    // Preview deployments and local dev are only accepted outside production, so a page that someone
+    // else hosts on *.vercel.app can never post to the live endpoint.
+    if (process.env.VERCEL_ENV === 'production') return false;
+    return hostname.endsWith('.vercel.app') || hostname === 'localhost';
   } catch {
     return false;
   }
@@ -48,18 +50,33 @@ function rateLimited(ip: string, now: number): boolean {
   return false;
 }
 
+function floodGuard(now: number): boolean {
+  globalHits = globalHits.filter((t) => now - t < RATE_WINDOW_MS);
+  if (globalHits.length >= GLOBAL_LIMIT) return true;
+  globalHits.push(now);
+  return false;
+}
+
 /** Removes line breaks so a value can never inject extra mail headers. */
 const oneLine = (s: string) => s.replace(/[\r\n]+/g, ' ').trim();
 
 export async function POST(request: Request): Promise<Response> {
   if (!originAllowed(request)) return json(403, { error: 'origin' });
 
+  if (!(request.headers.get('content-type') ?? '').toLowerCase().startsWith('application/json')) {
+    return json(415, { error: 'invalid' });
+  }
+  if (Number(request.headers.get('content-length') ?? 0) > MAX_BODY_BYTES) return json(413, { error: 'invalid' });
+
   let data: Record<string, unknown>;
   try {
-    data = await request.json();
+    const raw = await request.text();
+    if (raw.length > MAX_BODY_BYTES) return json(413, { error: 'invalid' });
+    data = JSON.parse(raw);
   } catch {
     return json(400, { error: 'invalid' });
   }
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) return json(400, { error: 'invalid' });
   const str = (k: string) => (typeof data[k] === 'string' ? (data[k] as string) : '');
 
   // Honeypot: real visitors never see or fill this field. Pretend it worked.
@@ -75,12 +92,12 @@ export async function POST(request: Request): Promise<Response> {
 
   const errors: Record<string, true> = {};
   if (name.length < 1 || name.length > 100) errors.name = true;
-  if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) errors.email = true;
+  if (email.length > 254 || !/^[^\s@<>,;"']+@[^\s@<>,;"']+\.[^\s@<>,;"']{2,}$/.test(email)) errors.email = true;
   if (message.length < 10 || message.length > 5000) errors.message = true;
   if (Object.keys(errors).length) return json(400, { error: 'validation', fields: errors });
 
   const ip = (request.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim();
-  if (rateLimited(ip, now)) return json(429, { error: 'rate' });
+  if (rateLimited(ip, now) || floodGuard(now)) return json(429, { error: 'rate' }, { 'retry-after': '3600' });
 
   const key = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO;

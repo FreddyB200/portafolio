@@ -23,6 +23,7 @@ const field = 'mt-2 block w-full border-[1.5px] border-white bg-transparent px-4
   data-error-prefix={c.errorPrefix}
   data-errors={JSON.stringify(c.errors)}
   data-linkedin={links.linkedin}
+  data-linkedin-cta={c.errors.linkedinCta}
 >
   <h3 class="font-display text-[clamp(1.5rem,2.2vw,2.25rem)] font-bold leading-tight tracking-tight">{c.formTitle}</h3>
 
@@ -102,6 +103,17 @@ const field = 'mt-2 block w-full border-[1.5px] border-white bg-transparent px-4
     };
     fields.forEach((n) => input(n).addEventListener('blur', () => input(n).value && validate(n)));
 
+    // On a failure the message stays in the box; point to the other ways to reach me, as text and a link.
+    const fail = (text: string) => {
+      status.textContent = `${prefix}: ${text} `;
+      const a = document.createElement('a');
+      a.href = form.dataset.linkedin ?? '#';
+      a.rel = 'noopener';
+      a.className = 'underline decoration-1';
+      a.textContent = `${form.dataset.linkedinCta ?? 'LinkedIn'} ↗`;
+      status.appendChild(a);
+    };
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       status.textContent = '';
@@ -129,16 +141,20 @@ const field = 'mt-2 block w-full border-[1.5px] border-white bg-transparent px-4
           form.reset();
           ts.value = String(Date.now());
           status.textContent = form.dataset.sent ?? '';
-        } else if (res.status === 400) {
-          const body = await res.json().catch(() => ({}));
-          const bad = Object.keys(body.fields ?? {});
-          if (bad.length) bad.forEach((n) => fields.includes(n as never) && showError(n, true));
-          else status.textContent = `${prefix}: ${msg.server}`;
         } else {
-          status.textContent = `${prefix}: ${res.status === 429 ? msg.rate : msg.server}`;
+          const body = await res.json().catch(() => ({}));
+          if (res.status === 400 && Object.keys(body.fields ?? {}).length) {
+            Object.keys(body.fields).forEach((n) => fields.includes(n as never) && showError(n, true));
+          } else if (res.status === 429) {
+            status.textContent = `${prefix}: ${msg.rate}`;
+          } else if (res.status === 503 || body.error === 'not_configured') {
+            fail(msg.unavailable);
+          } else {
+            fail(msg.server);
+          }
         }
       } catch {
-        status.textContent = `${prefix}: ${msg.network}`;
+        fail(msg.network);
       } finally {
         button.disabled = false;
         label.textContent = sendText;

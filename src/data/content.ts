@@ -221,6 +221,8 @@ export interface Copy {
       rate: string;
       server: string;
       network: string;
+      unavailable: string;
+      linkedinCta: string;
     };
   };
   hero: { eyebrow: string; headline: string[]; paragraphs: string[]; photoAlt: string };
@@ -417,8 +419,10 @@ const en: Copy = {
       email: 'Enter a valid email address.',
       message: 'Write at least 10 characters.',
       rate: 'Too many messages from this connection. Try again later.',
-      server: 'The message could not be sent. Please reach me on LinkedIn.',
+      server: 'The message could not be sent. Try again, or use another way to reach me.',
       network: 'No connection. Check your network and try again.',
+      unavailable: 'The form is not available right now. Use Email me, Copy email or LinkedIn instead.',
+      linkedinCta: 'Message me on LinkedIn',
     },
   },
   hero: {
@@ -806,8 +810,10 @@ const es: Copy = {
       email: 'Escribe un correo válido.',
       message: 'Escribe al menos 10 caracteres.',
       rate: 'Demasiados mensajes desde esta conexión. Inténtalo más tarde.',
-      server: 'No se pudo enviar el mensaje. Escríbeme por LinkedIn.',
+      server: 'No se pudo enviar el mensaje. Inténtalo de nuevo o usa otra vía de contacto.',
       network: 'Sin conexión. Revisa tu red e inténtalo de nuevo.',
+      unavailable: 'El formulario no está disponible por ahora. Usa Escríbeme, Copiar correo o LinkedIn.',
+      linkedinCta: 'Escríbeme por LinkedIn',
     },
   },
   hero: {
