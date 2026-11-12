@@ -28,7 +28,7 @@ const padX = 'px-[var(--gutter)] lg:pr-[clamp(1.5rem,2.6vw,3.5rem)]';
 
   <div
     class:list={[
-      'order-4 grid gap-6 py-10 font-serif text-[clamp(1.125rem,1.22vw,1.35rem)] font-[430] leading-[1.5] text-ink-soft md:grid-cols-2 md:gap-9 lg:col-start-1 lg:row-start-2 lg:pb-0 lg:pt-[clamp(1.5rem,2.6vw,3rem)]',
+      'rise [--d:140ms] order-4 grid gap-6 py-10 font-serif text-[clamp(1.125rem,1.22vw,1.35rem)] font-[430] leading-[1.5] text-ink-soft md:grid-cols-2 md:gap-9 lg:col-start-1 lg:row-start-2 lg:pb-0 lg:pt-[clamp(1.5rem,2.6vw,3rem)]',
       padX,
     ]}
   >
@@ -36,7 +36,7 @@ const padX = 'px-[var(--gutter)] lg:pr-[clamp(1.5rem,2.6vw,3.5rem)]';
   </div>
 
   <figure
-    class="relative order-3 aspect-[4/3] border-y border-ink dark:border-rule lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:aspect-auto lg:min-h-full lg:border-y-0 lg:border-l"
+    class="relative order-3 aspect-[4/3] overflow-hidden border-y border-ink dark:border-rule lg:col-start-2 lg:row-span-3 lg:row-start-1 lg:aspect-auto lg:min-h-full lg:border-y-0 lg:border-l"
   >
     <Image
       src={photo}
@@ -47,13 +47,13 @@ const padX = 'px-[var(--gutter)] lg:pr-[clamp(1.5rem,2.6vw,3.5rem)]';
       quality={82}
       loading="eager"
       fetchpriority="high"
-      class="absolute inset-0 h-full w-full object-cover object-[56%_center]"
+      class="hero-photo absolute inset-0 h-full w-full object-cover object-[56%_center]"
     />
   </figure>
 
   <div
     class:list={[
-      'order-2 flex flex-wrap items-center gap-2.5 pb-9 lg:col-start-1 lg:row-start-3 lg:pb-[clamp(1.75rem,2.8vw,3rem)] lg:pt-8',
+      'rise [--d:260ms] order-2 flex flex-wrap items-center gap-2.5 pb-9 lg:col-start-1 lg:row-start-3 lg:pb-[clamp(1.75rem,2.8vw,3rem)] lg:pt-8',
       padX,
     ]}
   >

@@ -418,3 +418,111 @@
     transform: scaleX(1);
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Motion polish: transform/opacity only, off for reduced motion.      */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--d, 0ms);
+  }
+  .hero-photo {
+    animation: photo-settle 1.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  /* Smooth cross-document transitions between Home / Hackathons / Projects / About. */
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0.22s;
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes photo-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Theme switch: a circle grows from the toggle button (set in ThemeToggle.astro). */
+:root.vt-theme::view-transition-old(root),
+:root.vt-theme::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+:root.vt-theme::view-transition-old(root) {
+  z-index: 1;
+}
+:root.vt-theme::view-transition-new(root) {
+  z-index: 2;
+}
+:root.vt-theme header {
+  view-transition-name: none !important;
+}
+
+.stat-num {
+  font-variant-numeric: tabular-nums;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+
+/* Print / save as PDF: clean black-on-white, links spelled out, no chrome. */
+@media print {
+  header,
+  .scroll-progress,
+  .sect-toggle,
+  [data-theme-toggle],
+  [data-mail],
+  form,
+  .navmenu {
+    display: none !important;
+  }
+  :root {
+    color-scheme: light;
+  }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt;
+  }
+  .reveal,
+  .rise,
+  .hero-photo {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .hero-wash,
+  footer {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  footer * {
+    color: #000 !important;
+    border-color: #000 !important;
+  }
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    word-break: break-all;
+  }
+  .row,
+  li {
+    break-inside: avoid;
+  }
+}

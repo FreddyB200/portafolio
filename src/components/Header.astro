@@ -13,7 +13,7 @@ const c = copy[lang];
 const isCurrent = (item: (typeof c.nav)[number]) => item.page === page && !item.hash;
 ---
 
-<header class="sticky top-0 z-40 border-b border-rule bg-bg/95 backdrop-blur">
+<header class="sticky top-0 z-40 border-b border-rule bg-bg/95 backdrop-blur" style="view-transition-name: site-header">
   <div class="wrap flex items-center justify-between gap-3 py-3 xl:gap-6">
     <a href={pathFor(lang)} class="font-display text-base font-bold tracking-tight text-ink no-underline xs:text-lg">
       {site.name.split(' ').slice(0, 2).join(' ')}
@@ -27,7 +27,7 @@ const isCurrent = (item: (typeof c.nav)[number]) => item.page === page && !item.
               <a
                 href={hrefFor(lang, item.page, item.hash)}
                 aria-current={isCurrent(item) ? 'page' : undefined}
-                class="meta text-ink-soft no-underline hover:text-accent-ink hover:underline aria-[current=page]:text-ink aria-[current=page]:underline"
+                class="meta text-ink-soft no-underline hover:text-accent-ink hover:underline aria-[current=location]:text-ink aria-[current=page]:text-ink aria-[current=location]:underline aria-[current=page]:underline"
               >
                 {item.label}
               </a>
@@ -77,7 +77,7 @@ const isCurrent = (item: (typeof c.nav)[number]) => item.page === page && !item.
                   <a
                     href={hrefFor(lang, item.page, item.hash)}
                     aria-current={isCurrent(item) ? 'page' : undefined}
-                    class="meta block py-4 text-ink no-underline hover:text-accent-ink aria-[current=page]:underline"
+                    class="meta block py-4 text-ink no-underline hover:text-accent-ink aria-[current=location]:underline aria-[current=page]:underline"
                   >
                     {item.label}
                   </a>
@@ -108,5 +108,30 @@ const isCurrent = (item: (typeof c.nav)[number]) => item.page === page && !item.
         menu.querySelector('summary')?.focus();
       }
     });
+  }
+
+  // Scroll-spy: underline the nav link of the section that is on screen (text underline, not colour alone).
+  const links = document.querySelectorAll<HTMLAnchorElement>('header a[href*="#"]');
+  const byId = new Map<string, HTMLAnchorElement[]>();
+  links.forEach((a) => {
+    const id = a.hash.slice(1);
+    if (id) byId.set(id, [...(byId.get(id) ?? []), a]);
+  });
+  const targets = [...byId.keys()].map((id) => document.getElementById(id)).filter((t): t is HTMLElement => !!t);
+  if (targets.length && 'IntersectionObserver' in window) {
+    const visible = new Set<string>();
+    const paint = () => {
+      links.forEach((a) => a.getAttribute('aria-current') === 'location' && a.removeAttribute('aria-current'));
+      const cur = targets.filter((t) => visible.has(t.id)).pop();
+      if (cur) byId.get(cur.id)?.forEach((a) => !a.hasAttribute('aria-current') && a.setAttribute('aria-current', 'location'));
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => (e.isIntersecting ? visible.add(e.target.id) : visible.delete(e.target.id)));
+        paint();
+      },
+      { rootMargin: '-30% 0px -60% 0px' },
+    );
+    targets.forEach((t) => io.observe(t));
   }
 </script>
