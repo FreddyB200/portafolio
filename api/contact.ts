@@ -120,7 +120,11 @@ export async function POST(request: Request): Promise<Response> {
         text: `From: ${name} <${email}>\n\n${message}\n`,
       }),
     });
-    if (!res.ok) return json(502, { error: 'upstream' });
+    if (!res.ok) {
+      // Function logs only (Vercel dashboard): why the mail provider refused the message.
+      console.error('contact: provider refused', res.status, (await res.text().catch(() => '')).slice(0, 300));
+      return json(502, { error: 'upstream' });
+    }
     return json(200, { ok: true });
   } catch {
     return json(502, { error: 'upstream' });
