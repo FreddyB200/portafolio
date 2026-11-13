@@ -123,7 +123,13 @@ export async function POST(request: Request): Promise<Response> {
     });
     if (!res.ok) {
       // Function logs only (Vercel dashboard): why the mail provider refused the message.
-      console.error('contact: provider refused', res.status, (await res.text().catch(() => '')).slice(0, 300));
+      console.error(
+        'contact: provider refused',
+        res.status,
+        (await res.text().catch(() => '')).slice(0, 300),
+        // Shape only, never the secret: Resend keys start with "re_" and have no whitespace.
+        { keyLength: key.length, keyPrefix: key.slice(0, 3), hasWhitespace: /\s/.test(key) },
+      );
       return json(502, { error: 'upstream' });
     }
     return json(200, { ok: true });
