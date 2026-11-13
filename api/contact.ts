@@ -99,8 +99,9 @@ export async function POST(request: Request): Promise<Response> {
   const ip = (request.headers.get('x-forwarded-for') ?? 'unknown').split(',')[0].trim();
   if (rateLimited(ip, now) || floodGuard(now)) return json(429, { error: 'rate' }, { 'retry-after': '3600' });
 
-  const key = process.env.RESEND_API_KEY;
-  const to = process.env.CONTACT_TO;
+  // trim(): a pasted value often carries a trailing newline or space.
+  const key = process.env.RESEND_API_KEY?.trim();
+  const to = process.env.CONTACT_TO?.trim();
   if (!key || !to) {
     // Visible only in the Vercel function logs (names and presence, never values).
     console.error('contact: not configured', { RESEND_API_KEY: !!key, CONTACT_TO: !!to });
