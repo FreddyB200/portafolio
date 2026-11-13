@@ -101,7 +101,11 @@ export async function POST(request: Request): Promise<Response> {
 
   const key = process.env.RESEND_API_KEY;
   const to = process.env.CONTACT_TO;
-  if (!key || !to) return json(503, { error: 'not_configured' });
+  if (!key || !to) {
+    // Visible only in the Vercel function logs (names and presence, never values).
+    console.error('contact: not configured', { RESEND_API_KEY: !!key, CONTACT_TO: !!to });
+    return json(503, { error: 'not_configured' });
+  }
 
   try {
     const res = await fetch('https://api.resend.com/emails', {
