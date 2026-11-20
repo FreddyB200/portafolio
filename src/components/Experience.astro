@@ -1,5 +1,5 @@
 ---
-import { copy, formalMonths, formalSpells, formatDuration, durationUnits, type Lang } from '../data/content';
+import { copy, formalMonths, formalSpells, formatDurationPlus, durationUnits, type Lang } from '../data/content';
 
 interface Props {
   lang: Lang;
@@ -7,7 +7,7 @@ interface Props {
 const { lang } = Astro.props;
 const c = copy[lang].experience;
 const ui = copy[lang].ui;
-const duration = formatDuration(formalMonths(), lang);
+const duration = formatDurationPlus(formalMonths(), lang);
 ---
 
 <section id="experience" aria-labelledby="experience-title" class="wrap py-16 md:py-24">
@@ -81,7 +81,9 @@ const duration = formatDuration(formalMonths(), lang);
       const parts: string[] = [];
       if (y > 0) parts.push(`${y} ${u.y[y === 1 ? 0 : 1]}`);
       if (m > 0 || y === 0) parts.push(`${m} ${u.m[m === 1 ? 0 : 1]}`);
-      el.textContent = parts.join(u.sep);
+      const exact = parts.join(u.sep);
+      // "2+ years (2 years, 5 months)": rounded-down figure first, exact one in brackets.
+      el.textContent = y > 0 && m > 0 ? `${y}+ ${u.y[y === 1 ? 0 : 1]} (${exact})` : exact;
     } catch (e) {}
   }
 </script>

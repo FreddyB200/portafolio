@@ -44,6 +44,14 @@ export function formatDuration(months: number, lang: Lang): string {
   return parts.join(u.sep);
 }
 
+/** "2+ years (2 years, 5 months)": the rounded-down figure plus the exact one. */
+export function formatDurationPlus(months: number, lang: Lang): string {
+  const u = units[lang];
+  const y = Math.floor(months / 12);
+  const exact = formatDuration(months, lang);
+  return y > 0 && months % 12 > 0 ? `${y}+ ${u.y[y === 1 ? 0 : 1]} (${exact})` : exact;
+}
+
 export const durationUnits = units;
 
 /**
